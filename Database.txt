@@ -1,0 +1,80 @@
+CREATE DATABASE test;
+
+\c test;
+
+CREATE TABLE contentTag (
+    ID          VARCHAR(2) not null,
+    name        VARCHAR(20) not null,
+    severity    INTEGER not null,
+
+    PRIMARY KEY     (ID)
+);
+
+CREATE TABLE stop (
+    ID              INTEGER not null,
+    locationName    VARCHAR(20) not null,
+
+    PRIMARY KEY     (ID)
+);
+
+CREATE TABLE incident(
+    ID              SERIAL not null,
+    description     TEXT not null,
+    stopID          INTEGER not null,
+    incidentTime    TIMESTAMP not null,
+    createdAt       TIMESTAMP not null,
+
+    PRIMARY KEY     (ID),
+    FOREIGN KEY     (stopID) references stop(ID)
+                    Deferrable Initially Deferred
+);
+
+CREATE TABLE incidentTag (
+    incidentID      INTEGER not null,
+    tagID           VARCHAR(2) not null,
+
+    PRIMARY KEY     (incidentID, tagID),
+    FOREIGN KEY     (incidentID) references incident(ID)
+                    Deferrable Initially Deferred,
+    FOREIGN KEY     (tagID) references contentTag(ID)
+                    Deferrable Initially Deferred 
+);
+
+
+CREATE TABLE route (
+    number      VARCHAR(3) not null,
+    startPoint  VARCHAR(40) not null,
+    endPoint    VARCHAR(40) not null,
+
+    PRIMARY KEY (number)
+);
+
+CREATE TABLE bus (
+    ID          VARCHAR(3) not null,
+    name        VARCHAR(40) not null,
+    routeNumber VARCHAR(5) not null,
+
+    PRIMARY KEY (ID),
+    FOREIGN KEY (routeNumber) references route (number)
+                Deferrable Initially Deferred
+);
+
+CREATE TABLE routeStops (
+    routeStopID     INTEGER not null,
+    routeNumber     VARCHAR(5) not null,
+    stopID          INTEGER not null,
+    arrivalTime     TIMESTAMP not null,
+    departureTime   TIMESTAMP not null,
+
+    PRIMARY KEY     (routeStopID),
+    FOREIGN KEY     (routeNumber) references route(number)
+                    Deferrable Initially Deferred,
+    FOREIGN KEY     (stopID) references stop(ID)
+                    Deferrable Initially Deferred
+);
+
+
+
+
+
+
