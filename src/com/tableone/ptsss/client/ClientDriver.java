@@ -15,9 +15,9 @@ public class ClientDriver {
 			System.out.print("\nPress enter to continue...");
 			scanner.nextLine();
 			
-			System.out.println("\n\n\nAvailable actions:");
+			System.out.println("\n\n\nAvailable actions:\n");
+			System.out.println("##: Perform an API call");
 			System.out.println("l: List available API calls");
-			System.out.println("## <params>: Perform an API call");
 			System.out.println("q: Quit");
 			System.out.print("\n> ");
 			
@@ -30,7 +30,7 @@ public class ClientDriver {
 			}
 			
 			//if the user types anything other than "q" or "l",
-			//attempt to parse their input as an api call attempt
+			//attempt to parse their input as an api call
 			try {
 				
 				handleApiCall(scanner, input);
@@ -40,7 +40,7 @@ public class ClientDriver {
 			} catch (Exception e) {
 				
 				if (e.getMessage() == null) {
-					System.out.println("An unhandled fatal error occurred while performing an API call!");
+					System.out.println("An unhandled error occurred while performing an API call!");
 					e.printStackTrace();
 					continue;
 				}
@@ -60,12 +60,10 @@ public class ClientDriver {
 		System.out.println("\nAll avaliable API calls:\n");
 		
 		System.out.println("pretend theres an actual list here");
-		System.out.println("0 - example(name, age)");
+		System.out.println("0 - exampleApi(name, age)");
 		System.out.println("1 - call1()");
 		System.out.println("2 - call2()");
 		System.out.println("etc...");
-		
-		System.out.println("\nUsage: ## <params>");
 		
 	}
 	
@@ -76,13 +74,11 @@ public class ClientDriver {
 		
 		if (input.isEmpty()) throw new Exception("No action provided!");
 		
-		String[] args = input.split(" ");
-		
-		switch (args[0]) {
+		switch (input) {
 		case "0":
 			//EXAMPLE API IMPLEMENTATION!
 			//FOR TEAM'S REFERENCE, REMOVE BEFORE SUBMISSION
-			new ClientApiExample(scanner, args);
+			new ClientApiExample().execute(scanner);
 			return;
 		case "1":
 			//run call1
@@ -92,7 +88,7 @@ public class ClientDriver {
 			return;
 		}
 		
-		throw new Exception("Unknown action: \"" + args[0] + "\"");
+		throw new Exception("Unknown action: \"" + input + "\"");
 		
 	}
 	

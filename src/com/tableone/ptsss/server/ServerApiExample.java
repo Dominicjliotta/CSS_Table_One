@@ -6,15 +6,13 @@ package com.tableone.ptsss.server;
  */
 
 //name it "ServerApi<Something>", and make sure to extend ServerApi
-public class ServerApiExample extends ServerApi {
+//when extending, include the data type that this api call returns
+//in this example, the api call returns a String
+//if your api call does not return anything, extend ServerApi<Void>
+public class ServerApiExample extends ServerApi<String> {
 
 	private String name;
 	private int age;
-	
-	//make sure it takes "Object..." instead of "Object[]"
-	public ServerApiExample(Object... args) throws Exception {
-		super(args);
-	}
 
 	//here, you parse the arguments given to the server by the client
 	//and save the data into instance variables.
@@ -43,7 +41,7 @@ public class ServerApiExample extends ServerApi {
 		
 		//if all checks pass, cast the data and save to instance variables
 		this.name = (String)args[0];
-		this.age = (int)args[1];
+		this.age = (Integer)args[1];
 		
 	}
 	
@@ -51,10 +49,8 @@ public class ServerApiExample extends ServerApi {
 	//you may return an object, not all apis will have to.
 	//if nothing has to be returned, simply return null instead.
 	//here, we will just return a string containing the name and age.
-	//NOTE: we are returning type Object, meaning we can return *anything*,
-	//and the client must perform a type check when receiving the return value!
 	@Override
-	public Object call() throws Exception {
+	protected String completeRequest() throws Exception {
 		return "NAME: " + this.name + ", AGE: " + this.age;
 	}
 

@@ -8,21 +8,26 @@ import java.util.Scanner;
 
 public abstract class ClientApi {
 	
-	protected ClientApi(Scanner scanner, String[] args) throws Exception {
+	public void execute(Scanner scanner) throws Exception {
 		
-		this.parseRequest(scanner, args);
+		System.out.println("\n--- " + this.getName() + " ---\n");
+		
+		this.parseRequest(scanner);
 		this.performCall();
 		
 	}
 	
+	//name of the api function, used as a visual header when calling
+	protected abstract String getName();
+	
 	//parse and validate user input
-	protected abstract void parseRequest(Scanner scanner, String[] args) throws Exception;
+	protected abstract void parseRequest(Scanner scanner) throws Exception;
 	
 	//make the api request to the server
 	protected abstract void performCall() throws Exception;
 	
 	//used to print the final result to the user
-	static protected void printOutput(String str) {
+	protected static void printOutput(String str) {
 		System.out.println("\n" + str);
 	}
 	

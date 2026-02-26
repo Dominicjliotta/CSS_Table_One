@@ -14,33 +14,44 @@ public class ClientApiExample extends ClientApi {
 
 	private String name;
 	private int age;
-	
-	//dont edit the constructor, keep it as-is
-	protected ClientApiExample(Scanner scanner, String[] args) throws Exception {
-		super(scanner, args);
-	}
 
-	//here, you parse the user's input (given by args), and save the necessary data
-	//into instance variables. you are also given the scanner in case you'd like to
-	//prompt the user for extra information
+	//name of the api function, used as a visual header when calling
 	@Override
-	protected void parseRequest(Scanner scanner, String[] args) throws Exception {
+	protected String getName() {
+		return "exampleApi()";
+	}
+	
+	//here, you may prompt the user for any parameters that the api requires.
+	//parse the user's input, and save the necessary data into instance variables
+	@Override
+	protected void parseRequest(Scanner scanner) throws Exception {
 		
 		//ALWAYS be sure to error check everything and handle all exceptions yourself!
 		//throw exceptions with meaningful messages
-		if (args.length < 3) {
-			throw new Exception("Invalid inputs for example()\nParameters: name, age");
-		}
 		
-		//saving a parameter to an instance variable, simple example
-		this.name = args[1];
+		//prompt the user for a name
+		System.out.print("Name: ");
 		
-		//saving a parameter to an instance variable, now with error checking!
+		//save the user's input into an instance variable
+		this.name = scanner.nextLine();
+		
+		//make sure the user really typed something!
+		if (this.name.isEmpty()) throw new Exception("Name cannot be blank!");
+		
+		//prompt the user for an age
+		System.out.print("Age: ");
+		
+		//although age is type int, we do NOT use scanner.nextInt(). using anything
+		//except for nextLine() will break the program. we need to take inputs as strings
+		//using nextLine() and parse them appropriately
+		String ageParam = scanner.nextLine();
+		
+		//parse the string input to an int, and save it into an instance variable!
 		try {
-			this.age = Integer.parseInt(args[2]);
-		} catch (Exception E) {
+			this.age = Integer.parseInt(ageParam);
+		} catch (Exception e) {
 			//replace java's exception with a more user-friendly error message
-			throw new Exception("Invalid value for age: \"" + args[2] + "\"");
+			throw new Exception("Invalid value for age: \"" + ageParam + "\"");
 		}
 		
 		//and a bounds check!
@@ -54,19 +65,11 @@ public class ClientApiExample extends ClientApi {
 	@Override
 	protected void performCall() throws Exception {
 		
-		ServerApiExample serverApi = new ServerApiExample(this.name, this.age);
-		Object returnValue = serverApi.call();
+		//make a call to ServerApiExample and save the output
+		ServerApiExample serverApi = new ServerApiExample();
+		String output = serverApi.call(this.name, this.age);
 		
-		//we expect a string, but serverApi.get() returns type Object,
-		//so make sure to type check the return value
-		if (!(returnValue instanceof String)) {
-			throw new Exception("Received invalid type from ServerApiExample");
-		}
-		
-		//return type has been validated, we can cast and save to a properly-typed variable
-		String output = (String)returnValue;
-		
-		//now that we finally have what we need, we may print the result using printOutput
+		//now that we have what we need, we may print the result using printOutput
 		printOutput(output);
 		
 	}
