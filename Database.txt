@@ -2,6 +2,8 @@ CREATE DATABASE test;
 
 \c test;
 
+-- Creating tables for the database
+
 CREATE TABLE contentTag (
     ID          VARCHAR(2) not null,
     name        VARCHAR(20) not null,
@@ -60,11 +62,10 @@ CREATE TABLE bus (
 );
 
 CREATE TABLE routeStops (
-    routeStopID     INTEGER not null,
+    routeStopID     SERIAL not null,
     routeNumber     VARCHAR(5) not null,
     stopID          INTEGER not null,
-    arrivalTime     TIMESTAMP not null,
-    departureTime   TIMESTAMP not null,
+    arrivalTime     TIME WITHOUT TIME ZONE not null,
 
     PRIMARY KEY     (routeStopID),
     FOREIGN KEY     (routeNumber) references route(number)
@@ -73,8 +74,64 @@ CREATE TABLE routeStops (
                     Deferrable Initially Deferred
 );
 
+-- Adding in values for route 510 (Everett to Seattle)
+
+INSERT INTO route (number, startPoint, endPoint)
+VALUES (510, 'Everett', 'Seattle')
+RETURNING number;
+
+INSERT INTO bus (ID, name, routeNumber)
+VALUES (1, 'Everett_to_Seattle', 510)
+RETURNING ID;
+
+INSERT INTO stop (ID, locationName)
+VALUES  (2986, 'Hewitt Ave'),
+        (2345, 'Everett_Station'),
+        (325, 'Mount_Lake_Terrace'),
+        (431, 'Howell_St.');
+
+INSERT INTO routeStops (routeNumber, stopID, arrivalTime)
+VALUES  (510, 2986, '10:00:00'),
+        (510, 2345, '10:15:00'),
+        (510, 325, '11:00:00'),
+        (510, 431, '11:30:00');
 
 
+-- Adding in values for route 515 (Lynwood to Seattle)
 
+INSERT INTO route (number, startPoint, endPoint)
+VALUES (515, 'Lynwood', 'Seattle');
+
+INSERT INTO bus (ID, name, routeNumber)
+VALUES (2, 'Lynwood_to_Seattle', 515);
+
+INSERT INTO stop (ID, locationName)
+VALUES  (2035, 'Lynwood_Center'),
+        (940, 'Stewart_St.'),
+        (620, '4th_Ave');
+
+INSERT INTO routeStops (routeNumber, stopID, arrivalTime)
+VALUES  (515, 2035, '09:00:00'),
+        (515, 940, '09:30:00'),
+        (515, 620, '11:00:00');
+
+
+-- Adding in values for route 550 (Bellevue to Seattle)
+
+INSERT INTO route (number, startPoint, endPoint)
+VALUES (550, 'Bellevue', 'Seattle');
+
+INSERT INTO bus (ID, name, routeNumber)
+VALUES (3, 'Bellevue_To_Seattle', 550);
+
+INSERT INTO stop (ID, locationName)
+VALUES  (355, 'Bellevue_Station'),
+        (842, 'S_Bellevue_Station'),
+        (375, '2nd_Ave.');
+
+INSERT INTO routeStops (routeNumber, stopID, arrivalTime)
+VALUES  (550, 355, '08:00:00'),
+        (550, 842, '08:35:00'),
+        (550, 375, '09:30:00');
 
 
