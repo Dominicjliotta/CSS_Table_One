@@ -61,11 +61,17 @@ CREATE TABLE bus (
                 Deferrable Initially Deferred
 );
 
+CREATE TABLE weekDay (
+    ID      VARCHAR(3),
+    day     VARCHAR(20),
+
+    PRIMARY KEY (ID)
+);
+
 CREATE TABLE routeStops (
-    routeStopID     SERIAL not null,
+    routeStopID     INTEGER not null,
     routeNumber     VARCHAR(5) not null,
     stopID          INTEGER not null,
-    arrivalTime     TIME WITHOUT TIME ZONE not null,
 
     PRIMARY KEY     (routeStopID),
     FOREIGN KEY     (routeNumber) references route(number)
@@ -73,6 +79,30 @@ CREATE TABLE routeStops (
     FOREIGN KEY     (stopID) references stop(ID)
                     Deferrable Initially Deferred
 );
+
+CREATE TABLE arrivalTime (
+    ID              SERIAL,
+    routeStopID    INTEGER,
+    time            TIME WITHOUT TIME ZONE ,
+    weekDayID       VARCHAR(3),
+
+    PRIMARY KEY (ID),
+    FOREIGN KEY (routeStopID) references routeStops(routeStopID)
+    Deferrable Initially Deferred,
+    FOREIGN KEY (weekDayID) references weekDay(ID)
+    Deferrable Initially Deferred
+);
+
+-- Domain Table for WeekDay 
+
+INSERT INTO weekDay (ID, day)
+VALUES ('MON', 'Monday'),
+        ('TUE', 'Tuesday'),
+        ('WED', 'Wednesday'),
+        ('THU', 'Thursday'),
+        ('FRI', 'Friday'),
+        ('SAT', 'Saturday'),
+        ('SUN', 'Sunday');
 
 -- Adding in values for route 510 (Everett to Seattle)
 
@@ -90,12 +120,72 @@ VALUES  (2986, 'Hewitt Ave'),
         (325, 'Mount_Lake_Terrace'),
         (431, 'Howell_St.');
 
-INSERT INTO routeStops (routeNumber, stopID, arrivalTime)
-VALUES  (510, 2986, '10:00:00'),
-        (510, 2345, '10:15:00'),
-        (510, 325, '11:00:00'),
-        (510, 431, '11:30:00');
+INSERT INTO routeStops (routeStopID, routeNumber, stopID)
+VALUES  (1, 510, 2986),
+        (2, 510, 2345),
+        (3, 510, 325),
+        (4, 510, 431);
 
+INSERT INTO arrivalTime (routeStopID, time, weekDayID)
+VALUES  (1, '09:30:00', 'MON'),
+        (1, '09:33:00', 'TUE'),
+        (1, '09:30:00', 'WED'),
+        (1, '09:35:00', 'THU'),
+        (1, '09:38:00', 'FRI'),
+        (1, '09:40:00', 'SAT'),
+        (1, '09:32:00', 'SUN'),
+        (1, '19:30:00', 'MON'),
+        (1, '19:30:00', 'TUE'),
+        (1, '19:30:00', 'WED'),
+        (1, '19:30:00', 'THU'),
+        (1, '19:30:00', 'FRI'),
+        (1, '19:30:00', 'SAT'),
+        (1, '19:30:00', 'SUN'),
+
+        (2, '09:33:00', 'MON'),
+        (2, '09:39:00', 'TUE'),
+        (2, '09:30:00', 'WED'),
+        (2, '09:45:00', 'THU'),
+        (2, '09:45:00', 'FRI'),
+        (2, '09:45:00', 'SAT'),
+        (2, '09:50:00', 'SUN'),
+        (2, '19:35:00', 'MON'),
+        (2, '19:35:00', 'TUE'),
+        (2, '19:36:00', 'WED'),
+        (2, '19:36:00', 'THU'),
+        (2, '19:38:00', 'FRI'),
+        (2, '19:40:00', 'SAT'),
+        (2, '19:35:00', 'SUN'),
+
+        (3, '10:33:00', 'MON'),
+        (3, '10:39:00', 'TUE'),
+        (3, '10:30:00', 'WED'),
+        (3, '10:45:00', 'THU'),
+        (3, '10:45:00', 'FRI'),
+        (3, '10:45:00', 'SAT'),
+        (3, '10:50:00', 'SUN'),
+        (3, '10:35:00', 'MON'),
+        (3, '20:35:00', 'TUE'),
+        (3, '20:36:00', 'WED'),
+        (3, '20:36:00', 'THU'),
+        (3, '20:38:00', 'FRI'),
+        (3, '20:40:00', 'SAT'),
+        (3, '20:35:00', 'SUN'),
+
+        (4, '11:33:00', 'MON'),
+        (4, '11:39:00', 'TUE'),
+        (4, '11:30:00', 'WED'),
+        (4, '11:45:00', 'THU'),
+        (4, '11:45:00', 'FRI'),
+        (4, '11:45:00', 'SAT'),
+        (4, '11:50:00', 'SUN'),
+        (4, '21:35:00', 'MON'),
+        (4, '21:35:00', 'TUE'),
+        (4, '21:36:00', 'WED'),
+        (4, '21:36:00', 'THU'),
+        (4, '21:38:00', 'FRI'),
+        (4, '21:40:00', 'SAT'),
+        (4, '21:35:00', 'SUN');
 
 -- Adding in values for route 515 (Lynwood to Seattle)
 
@@ -110,11 +200,56 @@ VALUES  (2035, 'Lynwood_Center'),
         (940, 'Stewart_St.'),
         (620, '4th_Ave');
 
-INSERT INTO routeStops (routeNumber, stopID, arrivalTime)
-VALUES  (515, 2035, '09:00:00'),
-        (515, 940, '09:30:00'),
-        (515, 620, '11:00:00');
+INSERT INTO routeStops (routeStopID, routeNumber, stopID)
+VALUES  (5, 515, 2035),
+        (6, 515, 940),
+        (7, 515, 620);
 
+INSERT INTO arrivalTime (routeStopID, time, weekDayID)
+VALUES  (5, '09:30:00', 'MON'),
+        (5, '09:33:00', 'TUE'),
+        (5, '09:30:00', 'WED'),
+        (5, '09:35:00', 'THU'),
+        (5, '09:38:00', 'FRI'),
+        (5, '09:40:00', 'SAT'),
+        (5, '09:32:00', 'SUN'),
+        (5, '19:30:00', 'MON'),
+        (5, '19:30:00', 'TUE'),
+        (5, '19:30:00', 'WED'),
+        (5, '19:30:00', 'THU'),
+        (5, '19:30:00', 'FRI'),
+        (5, '19:30:00', 'SAT'),
+        (5, '19:30:00', 'SUN'),
+
+        (6, '09:33:00', 'MON'),
+        (6, '09:39:00', 'TUE'),
+        (6, '09:30:00', 'WED'),
+        (6, '09:45:00', 'THU'),
+        (6, '09:45:00', 'FRI'),
+        (6, '09:45:00', 'SAT'),
+        (6, '09:50:00', 'SUN'),
+        (6, '19:35:00', 'MON'),
+        (6, '19:35:00', 'TUE'),
+        (6, '19:36:00', 'WED'),
+        (6, '19:36:00', 'THU'),
+        (6, '19:38:00', 'FRI'),
+        (6, '19:40:00', 'SAT'),
+        (6, '19:35:00', 'SUN'),
+
+        (7, '10:33:00', 'MON'),
+        (7, '10:39:00', 'TUE'),
+        (7, '10:30:00', 'WED'),
+        (7, '10:45:00', 'THU'),
+        (7, '10:45:00', 'FRI'),
+        (7, '10:45:00', 'SAT'),
+        (7, '10:50:00', 'SUN'),
+        (7, '10:35:00', 'MON'),
+        (7, '20:35:00', 'TUE'),
+        (7, '20:36:00', 'WED'),
+        (7, '20:36:00', 'THU'),
+        (7, '20:38:00', 'FRI'),
+        (7, '20:40:00', 'SAT'),
+        (7, '20:35:00', 'SUN');
 
 -- Adding in values for route 550 (Bellevue to Seattle)
 
@@ -129,9 +264,53 @@ VALUES  (355, 'Bellevue_Station'),
         (842, 'S_Bellevue_Station'),
         (375, '2nd_Ave.');
 
-INSERT INTO routeStops (routeNumber, stopID, arrivalTime)
-VALUES  (550, 355, '08:00:00'),
-        (550, 842, '08:35:00'),
-        (550, 375, '09:30:00');
+INSERT INTO routeStops (routeStopID, routeNumber, stopID)
+VALUES  (8, 550, 355),
+        (9, 550, 842),
+        (10, 550, 375);
 
+INSERT INTO arrivalTime (routeStopID, time, weekDayID)
+VALUES  (5, '09:30:00', 'MON'),
+        (8, '09:33:00', 'TUE'),
+        (8, '09:30:00', 'WED'),
+        (8, '09:35:00', 'THU'),
+        (8, '09:38:00', 'FRI'),
+        (8, '09:40:00', 'SAT'),
+        (8, '09:32:00', 'SUN'),
+        (8, '19:30:00', 'MON'),
+        (8, '19:30:00', 'TUE'),
+        (8, '19:30:00', 'WED'),
+        (8, '19:30:00', 'THU'),
+        (8, '19:30:00', 'FRI'),
+        (8, '19:30:00', 'SAT'),
+        (8, '19:30:00', 'SUN'),
 
+        (9, '09:33:00', 'MON'),
+        (9, '09:39:00', 'TUE'),
+        (9, '09:30:00', 'WED'),
+        (9, '09:45:00', 'THU'),
+        (9, '09:45:00', 'FRI'),
+        (9, '09:45:00', 'SAT'),
+        (9, '09:50:00', 'SUN'),
+        (9, '19:35:00', 'MON'),
+        (9, '19:35:00', 'TUE'),
+        (9, '19:36:00', 'WED'),
+        (9, '19:36:00', 'THU'),
+        (9, '19:38:00', 'FRI'),
+        (9, '19:40:00', 'SAT'),
+        (9, '19:35:00', 'SUN'),
+
+        (10, '10:33:00', 'MON'),
+        (10, '10:39:00', 'TUE'),
+        (10, '10:30:00', 'WED'),
+        (10, '10:45:00', 'THU'),
+        (10, '10:45:00', 'FRI'),
+        (10, '10:45:00', 'SAT'),
+        (10, '10:50:00', 'SUN'),
+        (10, '10:35:00', 'MON'),
+        (10, '20:35:00', 'TUE'),
+        (10, '20:36:00', 'WED'),
+        (10, '20:36:00', 'THU'),
+        (10, '20:38:00', 'FRI'),
+        (10, '20:40:00', 'SAT'),
+        (10, '20:35:00', 'SUN');
