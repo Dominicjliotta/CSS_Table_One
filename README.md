@@ -44,27 +44,34 @@ Current transit tools focus on schedules and routing but lack real-time, rider-r
 - The system will **not** rank or recommend the “safest” routes or stops  
 
 ---
+## Schema 
+![Schema for PTSSS](Schema.png)
 
+--- 
 ## API Overview
 
 ### Route APIs
 - `getAllRoutes()`  
-- `getRouteInfo(routeNumber)`  
-- `getRouteStops(routeNumber)`  
-- `getSortedRouteList(time, destination)` *(sorted by time/destination, not safety)*  
-- `getBuses(routeNumber)`  
+### LargeList 
+- `getAllRoutes()`
+## Complex Query 
+- `getSortedRouteList(timestamp time, string destination)`
+- `getIncidents (string routeNumber)`
+- `getRecentTags(string routeNumber)`
+### CRUD Multiple
+- `submitIncident( All information required )`
+- `UpdateIncident()`
 
-### Incident APIs
-- `submitIncident(tag)`  
-- `getIncidents(routeNumber)`  
-- `getIncidentsByStop(locationName)`  
-- `getRecentTags(routeNumber)`  
-
-### Safety APIs
-- `getWeeklyRating(routeNumber)`  
-
-Additional CRUD APIs support routes, stops, incidents, and tags.
-
+### Detail API 
+- `getRouteInfo(string routeNumber) `
+- `getRouteStops(string routeNumber)`
+- `getIncidentsByStop(string locationName)`
+- `getWeeklyRating(string routeNumber)`
+### Small List
+- `getBuses (string routeNumber)`
+- `GetContextTag()`
+### CRUD Single
+- `CreateTag(string tagName)`
 ---
 
 ## Tech Stack
