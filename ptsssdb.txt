@@ -1,6 +1,6 @@
-CREATE DATABASE test;
+CREATE DATABASE ptsssdb;
 
-\c test;
+\c ptsssdb;
 
 -- Creating tables for the database
 
