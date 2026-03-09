@@ -96,13 +96,29 @@ CREATE TABLE arrivalTime (
 -- Domain Table for WeekDay 
 
 INSERT INTO weekDay (ID, day)
-VALUES ('MON', 'Monday'),
+VALUES  ('MON', 'Monday'),
         ('TUE', 'Tuesday'),
         ('WED', 'Wednesday'),
         ('THU', 'Thursday'),
         ('FRI', 'Friday'),
         ('SAT', 'Saturday'),
         ('SUN', 'Sunday');
+
+-- Domain Table for contentTag
+
+INSERT INTO contentTag (ID, name, severity)
+VALUES  ('MU', 'Murder', 10),
+        ('SH', 'Shooting', 10),
+        ('SA', 'Sexual Assault', 10),
+        ('ST', 'Stabbing', 9),
+        ('AS', 'Assault', 9),
+        ('RO', 'Robbery', 8),
+        ('FI', 'Fighting', 7),
+        ('HA', 'Harrassment', 6),
+        ('DR', 'Drug Use', 5),
+        ('VA', 'Vandalism', 4),
+        ('DC', 'Disorderly Conduct', 3),
+        ('CR', 'Crowding', 2);
 
 -- Adding in values for route 510 (Everett to Seattle)
 
