@@ -12,7 +12,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		//set up resources on the server side
-		ServerDriver.setup();
+		if (!ServerDriver.setup()) return;
 		
 		//begin client loop to continuously process user input
 		ClientDriver.inputLoop();

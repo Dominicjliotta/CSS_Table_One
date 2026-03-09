@@ -61,7 +61,7 @@ public class ClientDriver {
 		
 		System.out.println("pretend theres an actual list here");
 		System.out.println("0 - exampleApi(name, age)");
-		System.out.println("1 - call1()");
+		System.out.println("1 - getSortedStopList(weekDay, destination)");
 		System.out.println("2 - call2()");
 		System.out.println("etc...");
 		
@@ -81,7 +81,7 @@ public class ClientDriver {
 			new ClientApiExample().execute(scanner);
 			return;
 		case "1":
-			//run call1
+			new ClientApiGetSortedStopList().execute(scanner);
 			return;
 		case "2":
 			//run call2
