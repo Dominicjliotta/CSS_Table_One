@@ -5,8 +5,8 @@ CREATE DATABASE ptsssdb;
 -- Creating tables for the database
 
 CREATE TABLE contentTag (
-    ID          VARCHAR(2) not null,
-    name        VARCHAR(20) not null,
+    ID          SERIAL not null,
+    name        TEXT not null,
     severity    INTEGER not null,
 
     PRIMARY KEY     (ID)
@@ -19,7 +19,7 @@ CREATE TABLE stop (
     PRIMARY KEY     (ID)
 );
 
-CREATE TABLE incident(
+CREATE TABLE incident (
     ID              SERIAL not null,
     description     TEXT not null,
     stopID          INTEGER not null,
