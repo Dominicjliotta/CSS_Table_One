@@ -6,7 +6,7 @@ CREATE DATABASE ptsssdb;
 
 CREATE TABLE contentTag (
     ID          SERIAL not null,
-    name        TEXT not null,
+    name        TEXT unique not null,
     severity    INTEGER not null,
 
     PRIMARY KEY     (ID)
