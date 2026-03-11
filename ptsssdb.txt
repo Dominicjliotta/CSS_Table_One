@@ -21,6 +21,7 @@ CREATE TABLE stop (
 
 CREATE TABLE incident (
     ID              SERIAL not null,
+    uuid            VARCHAR(36) unique not null,
     description     TEXT not null,
     stopID          INTEGER not null,
     incidentTime    TIMESTAMP not null,
