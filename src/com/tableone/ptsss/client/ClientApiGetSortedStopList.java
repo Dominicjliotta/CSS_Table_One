@@ -11,7 +11,7 @@ public class ClientApiGetSortedStopList extends ClientApi {
 	
 	@Override
 	protected String getName() {
-		return "getSortedStopList(weekDay, destination)";
+		return "getSortedStopList(destination, weekDay)";
 	}
 
 	@Override

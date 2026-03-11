@@ -14,6 +14,9 @@ public class ServerDriver {
 	
 	/* global prepared query objects */
 	private static PreparedStatement getSortedStopList;
+	private static PreparedStatement deleteIncidentTags;
+	private static PreparedStatement setIncidentDescription;
+	private static PreparedStatement addIncidentTag;
 	
 	//connects to the database, sets up prepared statements, etc.
 	public static boolean setup() {
@@ -62,6 +65,19 @@ public class ServerDriver {
 		return connection;
 	}
 	
+	//begin a transaction
+	public static void beginTX() throws Exception {
+		if (connection.getAutoCommit() == false) return;
+		connection.setAutoCommit(false);
+	}
+	
+	//commit a transaction
+	public static void commitTX() throws Exception {
+		if (connection.getAutoCommit() == true) return;
+		connection.commit();
+		connection.setAutoCommit(true);
+	}
+	
 	//calculates the score for a route given its route number
 	public static double getScore(String routeNumber) {
 		//TODO: score calculation implementation
@@ -72,6 +88,9 @@ public class ServerDriver {
 	private static void prepareQueries() throws Exception {
 		
 		query_getSortedStopList();
+		query_deleteIncidentTags();
+		query_addIncidentTag();
+		query_setIncidentDescription();
 		
 	}
 	
@@ -102,6 +121,63 @@ public class ServerDriver {
 				+ "ORDER BY ArrivalTime.time;");
 		
 		return getSortedStopList;
+		
+	}
+	
+	/*
+	 * deletes all tags for an incident
+	 * 
+	 * PARAMS:
+	 * 1 - incidentUUID (string)
+	 */
+	public static PreparedStatement query_deleteIncidentTags() throws Exception {
+		
+		if (deleteIncidentTags != null) return deleteIncidentTags;
+		
+		deleteIncidentTags = connection.prepareStatement(
+				"DELETE FROM IncidentTags\r\n"
+				+ "WHERE incidentID = (SELECT id FROM Incident WHERE uuid ILIKE ?);");
+		
+		return deleteIncidentTags;
+		
+	}
+	
+	/*
+	 * adds a tag to an incident
+	 * 
+	 * PARAMS:
+	 * 1 - incidentUUID (string)
+	 * 2 - tag (string)
+	 */
+	public static PreparedStatement query_addIncidentTag() throws Exception {
+		
+		if (addIncidentTag != null) return addIncidentTag;
+		
+		addIncidentTag = connection.prepareStatement(
+				"INSERT INTO IncidentTags (incidentid, tagid)\r\n"
+				+ "VALUES ((SELECT id FROM Incident WHERE uuid ILIKE ?), (SELECT id FROM contenttag WHERE name ILIKE ?));");
+		
+		return addIncidentTag;
+		
+	}
+	
+	/*
+	 * change the description of an incident
+	 * 
+	 * PARAMS:
+	 * 1 - description (string)
+	 * 2 - incidentUUID (string)
+	 */
+	public static PreparedStatement query_setIncidentDescription() throws Exception {
+		
+		if (setIncidentDescription != null) return setIncidentDescription;
+		
+		setIncidentDescription = connection.prepareStatement(
+				"UPDATE Incident\r\n"
+				+ "SET description = ?\r\n"
+				+ "WHERE uuid ILIKE ?;");
+		
+		return setIncidentDescription;
 		
 	}
 	

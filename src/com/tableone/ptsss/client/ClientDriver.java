@@ -61,9 +61,8 @@ public class ClientDriver {
 		
 		System.out.println("pretend theres an actual list here");
 		System.out.println("0 - exampleApi(name, age)");
-		System.out.println("1 - getSortedStopList(weekDay, destination)");
-		System.out.println("2 - call2()");
-		System.out.println("etc...");
+		System.out.println("1 - getSortedStopList(destination, weekDay)");
+		System.out.println("2 - updateIncident(incidentUUID, newDescription?, newTags[]?)");
 		
 	}
 	
@@ -84,7 +83,7 @@ public class ClientDriver {
 			new ClientApiGetSortedStopList().execute(scanner);
 			return;
 		case "2":
-			//run call2
+			new ClientApiUpdateIncident().execute(scanner);
 			return;
 		}
 		
