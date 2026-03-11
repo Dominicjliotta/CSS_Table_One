@@ -36,8 +36,8 @@ public class ServerApiGetSortedStopList extends ServerApi<String> {
 	@Override
 	protected String completeRequest() throws Exception {
 		
-		//fetch the query for calculating overall route scores
-		PreparedStatement scorePs = ServerDriver.query_getOverallScore();
+		//fetch the query for calculating semi-yearly route scores
+		PreparedStatement scorePs = ServerDriver.query_getSemiYearlyScore();
 		
 		//fetch the query for this api call
 		PreparedStatement ps = ServerDriver.query_getSortedStopList();

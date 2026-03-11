@@ -13,7 +13,7 @@ public class ServerDriver {
 	private static final String PASSWORD = "***"; //YOUR PASSWORD
 	
 	/* global prepared query objects */
-	private static PreparedStatement getOverallScore;
+	private static PreparedStatement getSemiYearlyScore;
 	private static PreparedStatement getWeeklyScore;
 	
 	private static PreparedStatement getSortedStopList;
@@ -84,7 +84,7 @@ public class ServerDriver {
 	//runs all PreparedStatement functions once to initialize them
 	private static void prepareQueries() throws Exception {
 		
-		query_getOverallScore();
+		query_getSemiYearlyScore();
 		query_getWeeklyScore();
 		query_getSortedStopList();
 		query_deleteIncidentTags();
@@ -94,16 +94,16 @@ public class ServerDriver {
 	}
 	
 	/*
-	 * query for getting a route's overall score (past 6 months)
+	 * query for getting a route's semi-yearly score (past 6 months)
 	 *
 	 * PARAMS:
 	 * 1 - routeNumber (string)
 	 */
-	public static PreparedStatement query_getOverallScore() throws Exception {
+	public static PreparedStatement query_getSemiYearlyScore() throws Exception {
 		
-		if (getOverallScore != null) return getOverallScore;
+		if (getSemiYearlyScore != null) return getSemiYearlyScore;
 		
-		getOverallScore = connection.prepareStatement(
+		getSemiYearlyScore = connection.prepareStatement(
 				"SELECT AVG(ContentTag.severity) AS \"score\"\r\n"
 				+ "FROM Route\r\n"
 				+ "	JOIN RouteStops ON (RouteStops.routeNumber = Route.number)\r\n"
@@ -114,7 +114,7 @@ public class ServerDriver {
 				+ "WHERE Route.number = ?\r\n"
 				+ "AND (now() - Incident.createdAt) < '6month';");
 		
-		return getOverallScore;
+		return getSemiYearlyScore;
 		
 	}
 	
