@@ -14,7 +14,6 @@ public class ClientApiGetAllArrivals extends ClientApi {
     @Override
     protected void parseRequest(Scanner scanner) throws Exception {
         //no arguments to parse for this api call
-        System.out.println("This API call does not take any arguments, just press enter to continue...");
     }
 
     @Override
@@ -26,7 +25,6 @@ public class ClientApiGetAllArrivals extends ClientApi {
         
         //print the output
         printOutput(output);
-        
     }
     
 }

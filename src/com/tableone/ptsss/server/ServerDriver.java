@@ -3,8 +3,7 @@ package com.tableone.ptsss.server;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-
-import org.postgresql.util.ExpressionProperties;
+import java.util.Properties;
 
 public class ServerDriver {
 
@@ -26,7 +25,7 @@ public class ServerDriver {
 	public static boolean setup() {
 		
 		//connect to the database
-		ExpressionProperties connectionProps = new ExpressionProperties();
+		Properties connectionProps = new Properties();
 		connectionProps.put("user", "postgres");
 		connectionProps.put("password", PASSWORD);
 		
@@ -91,7 +90,7 @@ public class ServerDriver {
 		query_deleteIncidentTags();
 		query_addIncidentTag();
 		query_setIncidentDescription();
-		
+		query_getAllArrivals();
 	}
 	
 	/*

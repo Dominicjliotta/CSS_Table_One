@@ -7,10 +7,14 @@ public class ServerApiGetAllArrivals extends ServerApi<String> {
     @Override
     protected void parseRequest(Object[] args) throws Exception {
         //no arguments to parse for this api call
+        if (args.length != 0) {
+            throw new Exception("ServerApiGetAllArrivals received " + args.length + " arguments, expected 0");
+        }
     }
 
     @Override
     protected String completeRequest() throws Exception {
+
         
         //fetch the query for this api call
         PreparedStatement ps = ServerDriver.query_getAllArrivals();
