@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Main",
+      "request": "launch",
+      "mainClass": "com.tableone.ptsss.Main",
+      "projectName": "FinalProject_e8994002",
+      "classPaths": [
+        "$Auto",
+        "${workspaceFolder}/lib/postgresql-42.7.10.jar"
+      ]
+    },
+    {
+      "type": "java",
+      "name": "Run Driver",
+      "request": "launch",
+      "preLaunchTask": "Compile Driver",
+      "mainClass": "Driver",
+      "classPaths": [
+        "${workspaceFolder}",
+        "${workspaceFolder}/lib/postgresql-42.7.10.jar"
+      ]
+    }
+  ]
+}

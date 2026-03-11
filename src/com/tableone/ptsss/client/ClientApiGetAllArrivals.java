@@ -6,6 +6,15 @@ import com.tableone.ptsss.server.ServerApiGetAllArrivals;
 
 public class ClientApiGetAllArrivals extends ClientApi {
 
+    public void execute(Scanner scanner) throws Exception {
+		
+		System.out.println("\n--- " + this.getName() + " ---\n");
+		
+		this.parseRequest(scanner);
+		this.performCall();
+		
+	}
+    
     @Override
     protected String getName() {
         return "getAllArrivals()";

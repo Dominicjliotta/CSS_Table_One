@@ -12,6 +12,7 @@ public abstract class ClientApi {
 		
 		System.out.println("\n--- " + this.getName() + " ---\n");
 		
+		
 		this.parseRequest(scanner);
 		this.performCall();
 		
