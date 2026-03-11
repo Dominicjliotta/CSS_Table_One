@@ -2,7 +2,7 @@ package com.tableone.ptsss.server;
 
 import java.sql.PreparedStatement;
 
-public class ServerApiUpdateIncident extends ServerApi<String> {
+public class ServerApiUpdateIncident extends ServerApi<Boolean> {
 
 	private String uuid;
 	private String description;
@@ -34,7 +34,7 @@ public class ServerApiUpdateIncident extends ServerApi<String> {
 	}
 
 	@Override
-	protected String completeRequest() throws Exception {
+	protected Boolean completeRequest() throws Exception {
 		
 		try {
 		
@@ -65,21 +65,10 @@ public class ServerApiUpdateIncident extends ServerApi<String> {
 			
 			ServerDriver.commitTX();
 			
-			String out = "Updated incident " + this.uuid + "!";
-			if (this.description != null) out += "\nNew description: " + this.description;
-			if (this.tags == null) return out;
-			
-			out += "\nNew tags: ";
-			
-			for (int i = 0; i < this.tags.length; i++) {
-				if (i > 0) out += ", ";
-				out += this.tags[i];
-			}
-			
-			return out;
+			return true;
 		
 		} catch (Exception e) {
-			throw new Exception("Could not update incident");
+			return false;
 		}
 		
 	}

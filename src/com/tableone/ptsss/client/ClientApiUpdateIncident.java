@@ -82,7 +82,9 @@ public class ClientApiUpdateIncident extends ClientApi {
 	protected void performCall() throws Exception {
 		
 		ServerApiUpdateIncident serverApi = new ServerApiUpdateIncident();
-		String output = serverApi.call(this.uuid, this.description, this.tags);
+		boolean success = serverApi.call(this.uuid, this.description, this.tags);
+		
+		String output = success ? ("Updated incident " + this.uuid) : "Could not update incident";
 		
 		printOutput(output);
 		
