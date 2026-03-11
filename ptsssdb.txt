@@ -32,9 +32,9 @@ CREATE TABLE incident (
                     Deferrable Initially Deferred
 );
 
-CREATE TABLE incidentTag (
+CREATE TABLE incidentTags (
     incidentID      INTEGER not null,
-    tagID           VARCHAR(2) not null,
+    tagID           INTEGER not null,
 
     PRIMARY KEY     (incidentID, tagID),
     FOREIGN KEY     (incidentID) references incident(ID)
