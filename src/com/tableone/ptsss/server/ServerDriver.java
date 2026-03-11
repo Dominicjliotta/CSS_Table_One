@@ -20,6 +20,7 @@ public class ServerDriver {
 	private static PreparedStatement deleteIncidentTags;
 	private static PreparedStatement setIncidentDescription;
 	private static PreparedStatement addIncidentTag;
+	private static PreparedStatement getAllArrivals;
 	
 	//connects to the database, sets up prepared statements, etc.
 	public static boolean setup() {
@@ -230,4 +231,17 @@ public class ServerDriver {
 		
 	}
 	
+	public static PreparedStatement query_getAllArrivals() throws Exception {
+		getAllArrivals = connection.prepareStatement(
+				"SELECT routeStops.routeNumber, locationName AS \"Stop Location\", bus.name AS bus, time AS arrivalTime, day\r\n"
+				+ "FROM route\r\n"
+				+ "	JOIN bus ON (bus.routeNumber = route.number)\r\n"
+				+ "	JOIN routeStops ON (route.number = routeStops.routeNumber)\r\n"
+				+ "	JOIN arrivalTime ON (arrivalTime.routeStopID = routeStops.routestopID)\r\n"
+				+ "	JOIN weekday ON (weekday.ID = arrivalTime.weekdayID)\r\n"
+				+ "	JOIN stop ON (stop.ID = routeStops.stopID)\r\n"
+				+ "ORDER BY routeNumber, day, arrivalTime;");
+
+		return getAllArrivals;
+	}
 }
