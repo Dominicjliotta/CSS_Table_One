@@ -13,6 +13,9 @@ public class ServerDriver {
 	private static final String PASSWORD = "***"; //YOUR PASSWORD
 	
 	/* global prepared query objects */
+	private static PreparedStatement getOverallScore;
+	private static PreparedStatement getWeeklyScore;
+	
 	private static PreparedStatement getSortedStopList;
 	private static PreparedStatement deleteIncidentTags;
 	private static PreparedStatement setIncidentDescription;
@@ -78,19 +81,65 @@ public class ServerDriver {
 		connection.setAutoCommit(true);
 	}
 	
-	//calculates the score for a route given its route number
-	public static double getScore(String routeNumber) {
-		//TODO: score calculation implementation
-		return 0;
-	}
-	
 	//runs all PreparedStatement functions once to initialize them
 	private static void prepareQueries() throws Exception {
 		
+		query_getOverallScore();
+		query_getWeeklyScore();
 		query_getSortedStopList();
 		query_deleteIncidentTags();
 		query_addIncidentTag();
 		query_setIncidentDescription();
+		
+	}
+	
+	/*
+	 * query for getting a route's overall score (past 6 months)
+	 *
+	 * PARAMS:
+	 * 1 - routeNumber (string)
+	 */
+	public static PreparedStatement query_getOverallScore() throws Exception {
+		
+		if (getOverallScore != null) return getOverallScore;
+		
+		getOverallScore = connection.prepareStatement(
+				"SELECT AVG(ContentTag.severity) AS \"score\"\r\n"
+				+ "FROM Route\r\n"
+				+ "	JOIN RouteStops ON (RouteStops.routeNumber = Route.number)\r\n"
+				+ "	JOIN Stop ON (Stop.ID = RouteStops.stopID)\r\n"
+				+ "	JOIN Incident ON (Incident.stopID = Stop.ID)\r\n"
+				+ "	JOIN IncidentTags ON (IncidentTags.incidentID = Incident.ID)\r\n"
+				+ "	JOIN ContentTag ON (ContentTag.ID = IncidentTags.tagID)\r\n"
+				+ "WHERE Route.number = ?\r\n"
+				+ "AND (now() - Incident.createdAt) < '6month';");
+		
+		return getOverallScore;
+		
+	}
+	
+	/*
+	 * query for getting a route's weekly score (past 7 days)
+	 *
+	 * PARAMS:
+	 * 1 - routeNumber (string)
+	 */
+	public static PreparedStatement query_getWeeklyScore() throws Exception {
+		
+		if (getWeeklyScore != null) return getWeeklyScore;
+		
+		getWeeklyScore = connection.prepareStatement(
+				"SELECT AVG(ContentTag.severity) AS \"score\"\r\n"
+				+ "FROM Route\r\n"
+				+ "	JOIN RouteStops ON (RouteStops.routeNumber = Route.number)\r\n"
+				+ "	JOIN Stop ON (Stop.ID = RouteStops.stopID)\r\n"
+				+ "	JOIN Incident ON (Incident.stopID = Stop.ID)\r\n"
+				+ "	JOIN IncidentTags ON (IncidentTags.incidentID = Incident.ID)\r\n"
+				+ "	JOIN ContentTag ON (ContentTag.ID = IncidentTags.tagID)\r\n"
+				+ "WHERE Route.number = ?\r\n"
+				+ "AND (now() - Incident.createdAt) < '7day';");
+		
+		return getWeeklyScore;
 		
 	}
 	

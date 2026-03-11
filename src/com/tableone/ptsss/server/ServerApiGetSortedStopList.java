@@ -36,6 +36,9 @@ public class ServerApiGetSortedStopList extends ServerApi<String> {
 	@Override
 	protected String completeRequest() throws Exception {
 		
+		//fetch the query for calculating overall route scores
+		PreparedStatement scorePs = ServerDriver.query_getOverallScore();
+		
 		//fetch the query for this api call
 		PreparedStatement ps = ServerDriver.query_getSortedStopList();
 		//set the parameters
@@ -59,7 +62,12 @@ public class ServerApiGetSortedStopList extends ServerApi<String> {
 			//get column values
 			String routeNumber = rs.getString("routeNumber");
 			Time time = rs.getTime("time");
-			double score = ServerDriver.getScore(routeNumber);
+			
+			//get the score for the route
+			scorePs.setString(1, routeNumber);
+			ResultSet scoreRs = scorePs.executeQuery();
+			scoreRs.next();
+			double score = scoreRs.getDouble("score");
 			
 			//add to the output string
 			out.append("\n");
