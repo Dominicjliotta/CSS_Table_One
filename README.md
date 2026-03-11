@@ -45,7 +45,7 @@ Current transit tools focus on schedules and routing but lack real-time, rider-r
 
 ---
 ## Schema 
-![Schema for PTSSS](Schema-CSS472-TableOne.png)
+![Schema for PTSSS](Schema-CSS475-TableOne.png)
  ---
  ## Scoring Calculations 
 - **Overall score:** Sum all severity scores for a certain route for every stop across all incident tags in the last 6 months.
