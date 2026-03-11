@@ -19,14 +19,14 @@ public class ClientApiGetSortedStopList extends ClientApi {
 		
 		//ask the user for a destination and save the input
 		System.out.print("Destination: ");
-		this.destination = scanner.nextLine();
+		this.destination = scanner.nextLine().trim();
 		
 		//make sure destination isnt blank
 		if (this.destination.isEmpty()) throw new Exception("Destination cannot be blank!");
 		
 		//ask the user for a week day and save the input
 		System.out.print("Day of the week: ");
-		this.weekDay = scanner.nextLine().toLowerCase();
+		this.weekDay = scanner.nextLine().toLowerCase().trim();
 		
 		//make sure the user gave a valid week day
 		if (!isValidWeekDay(this.weekDay)) throw new Exception("Invalid day of the week!");
