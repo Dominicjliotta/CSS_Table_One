@@ -133,9 +133,9 @@ RETURNING ID;
 
 INSERT INTO stop (ID, locationName)
 VALUES  (2986, 'Hewitt Ave'),
-        (2345, 'Everett_Station'),
-        (325, 'Mount_Lake_Terrace'),
-        (431, 'Howell_St.');
+        (2345, 'Everett Station'),
+        (325, 'Mount Lake Terrace'),
+        (431, 'Howell St');
 
 INSERT INTO routeStops (routeStopID, routeNumber, stopID)
 VALUES  (1, 510, 2986),
@@ -213,9 +213,9 @@ INSERT INTO bus (ID, name, routeNumber)
 VALUES (2, 'Lynwood_to_Seattle', 515);
 
 INSERT INTO stop (ID, locationName)
-VALUES  (2035, 'Lynwood_Center'),
-        (940, 'Stewart_St.'),
-        (620, '4th_Ave');
+VALUES  (2035, 'Lynwood Center'),
+        (940, 'Stewart St'),
+        (620, '4th Ave');
 
 INSERT INTO routeStops (routeStopID, routeNumber, stopID)
 VALUES  (5, 515, 2035),
@@ -277,9 +277,9 @@ INSERT INTO bus (ID, name, routeNumber)
 VALUES (3, 'Bellevue_To_Seattle', 550);
 
 INSERT INTO stop (ID, locationName)
-VALUES  (355, 'Bellevue_Station'),
-        (842, 'S_Bellevue_Station'),
-        (375, '2nd_Ave.');
+VALUES  (355, 'Bellevue Station'),
+        (842, 'S Bellevue Station'),
+        (375, '2nd Ave');
 
 INSERT INTO routeStops (routeStopID, routeNumber, stopID)
 VALUES  (8, 550, 355),
