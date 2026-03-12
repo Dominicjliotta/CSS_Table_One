@@ -8,8 +8,8 @@ import java.util.Properties;
 public class ServerDriver {
 
 	private static Connection connection;
-	private static final String DB_URL = "jdbc:postgresql://localhost/ptsssdb";
-	private static final String PASSWORD = "***"; //YOUR PASSWORD
+	private static final String DB_URL = "jdbc:postgresql://ptsss-server.postgres.database.azure.com:5432/ptsssdb";
+	private static final String PASSWORD = "Tableone475";
 	
 	/* global prepared query objects */
 	private static PreparedStatement getSemiYearlyScore;
@@ -26,7 +26,8 @@ public class ServerDriver {
 		
 		//connect to the database
 		Properties connectionProps = new Properties();
-		connectionProps.put("user", "postgres");
+		connectionProps.put("sslmode", "require");
+		connectionProps.put("user", "dbadmin");
 		connectionProps.put("password", PASSWORD);
 		
 		//save the connection to a global object
@@ -231,6 +232,9 @@ public class ServerDriver {
 	}
 	
 	public static PreparedStatement query_getAllArrivals() throws Exception {
+		
+		if (getAllArrivals != null) return getAllArrivals;
+		
 		getAllArrivals = connection.prepareStatement(
 				"SELECT routeStops.routeNumber, locationName AS \"Stop Location\", bus.name AS bus, time AS arrivalTime, day\r\n"
 				+ "FROM route\r\n"
@@ -242,5 +246,7 @@ public class ServerDriver {
 				+ "ORDER BY routeNumber, day, arrivalTime;");
 
 		return getAllArrivals;
+		
 	}
+	
 }

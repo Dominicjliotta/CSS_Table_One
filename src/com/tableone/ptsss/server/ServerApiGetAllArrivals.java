@@ -5,11 +5,6 @@ import java.sql.ResultSet;
 public class ServerApiGetAllArrivals extends ServerApi<String> {
 
     @Override
-    public String call(Object... args) throws Exception {
-		return this.completeRequest();
-    }
-
-    @Override
     protected void parseRequest(Object[] args) throws Exception {
         //no arguments to parse for this api call
         if (args.length != 0) {
