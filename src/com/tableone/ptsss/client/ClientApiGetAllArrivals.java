@@ -13,20 +13,22 @@ public class ClientApiGetAllArrivals extends ClientApi {
 		this.parseRequest(scanner);
 		this.performCall();
 
-        continueFetching();
+        continueFetching(scanner);
 		
 	}
 
-    protected void continueFetching() {
+    protected void continueFetching(Scanner scanner) {
         int buffer = 50; // number of results to return per call
         boolean continueLoop = true;
         while (continueLoop) {
             System.out.println("Next 50? (y/n)");
-            Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine().trim().toLowerCase();
             if (input.equals("y")) {
                 try {
-                    this.nextFifty(buffer);
+                    String output = this.nextFifty(buffer);
+                    if (output.contains("No more arrivals to display.")) {
+                        break;
+                    }
                     buffer += 50;
                 } catch (Exception e) {
                     System.out.println("An error occurred while fetching the next 50 arrivals.");
@@ -38,7 +40,7 @@ public class ClientApiGetAllArrivals extends ClientApi {
             } else {
                 System.out.println("Invalid input. Please enter 'y' or 'n'.");
             }
-        }
+        }       
     }
     
 
@@ -63,7 +65,7 @@ public class ClientApiGetAllArrivals extends ClientApi {
         printOutput(output);
     }
 
-    protected void nextFifty(int buffer) throws Exception {
+    protected String nextFifty(int buffer) throws Exception {
         
         //make the call to the server and get the output
         ServerApiGetAllArrivals serverApi = new ServerApiGetAllArrivals();
@@ -71,5 +73,6 @@ public class ClientApiGetAllArrivals extends ClientApi {
         
         //print the output
         printOutput(output);
+        return output;
     }
 }

@@ -39,7 +39,7 @@ public class ServerApiGetAllArrivals extends ServerApi<String> {
             String arrivalTime = resultSet.getString("arrivalTime");
             String day = resultSet.getString("day");
             
-            out.append("Route " + routeNumber + " - " + "Bus " + bus + " Stop Location " + stopLocation + " on " + day + " at " + arrivalTime + " count " + count + "\n");
+            out.append("Route " + routeNumber + " - " + "Bus " + bus + " Stop Location " + stopLocation + " on " + day + " at " + arrivalTime + "\n");
             count++;
         }
         
@@ -71,11 +71,16 @@ public class ServerApiGetAllArrivals extends ServerApi<String> {
             String arrivalTime = resultSet.getString("arrivalTime");
             String day = resultSet.getString("day");
             
-            out.append("Route " + routeNumber + " - " + "Bus " + bus + " Stop Location " + stopLocation + " on " + day + " at " + arrivalTime + " count " + count + "\n");
+            out.append("Route " + routeNumber + " - " + "Bus " + bus + " Stop Location " + stopLocation + " on " + day + " at " + arrivalTime +  "\n");
             count++;
         }
 
-        buffer += 50; // increment buffer for next call
+        // buffer += 50; // increment buffer for next call
+
+        if (count <= 50) {
+            
+            out.append("No more arrivals to display.\n");
+        }
         
         return out.toString();
     }
