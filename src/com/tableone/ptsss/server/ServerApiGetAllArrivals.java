@@ -4,6 +4,10 @@ import java.sql.ResultSet;
 
 public class ServerApiGetAllArrivals extends ServerApi<String> {
 
+    ResultSet resultSet;
+    int offset = 0;
+    int buffer = 50; // number of results to return per call
+
     @Override
     public String call(Object... args) throws Exception {
 		return this.completeRequest();
@@ -25,22 +29,58 @@ public class ServerApiGetAllArrivals extends ServerApi<String> {
         PreparedStatement ps = ServerDriver.query_getAllArrivals();
         
         //execute the query and get the results
-        ResultSet rs = ps.executeQuery();
+        resultSet = ps.executeQuery();
         
         //build the output string
         StringBuilder out = new StringBuilder();
         out.append("List of all bus arrivals:\n");
         
         //iterate through each row of the ResultSet
-        while (rs.next()) {
-            String routeNumber = rs.getString("routeNumber");
-            String stopLocation = rs.getString("Stop Location");
-            String bus = rs.getString("bus");
-            String arrivalTime = rs.getString("arrivalTime");
-            String day = rs.getString("day");
+        int count = 1;
+        while (resultSet.next() && count <= 50) { // limit to 50 results for readability
+            String routeNumber = resultSet.getString("routeNumber");
+            String stopLocation = resultSet.getString("Stop Location");
+            String bus = resultSet.getString("bus");
+            String arrivalTime = resultSet.getString("arrivalTime");
+            String day = resultSet.getString("day");
             
-            out.append("Route " + routeNumber + " - " + "Bus " + bus + " Stop Location " + stopLocation + " on " + day + " at " + arrivalTime + "\n");
+            out.append("Route " + routeNumber + " - " + "Bus " + bus + " Stop Location " + stopLocation + " on " + day + " at " + arrivalTime + " count " + count + "\n");
+            count++;
         }
+        
+        return out.toString();
+    }
+
+    public String nextFifty(int buffer) throws Exception {
+
+      
+        //fetch the query for this api call
+        PreparedStatement ps = ServerDriver.query_getAllArrivals();
+        
+        //execute the query and get the results
+        resultSet = ps.executeQuery();
+        
+        //build the output string
+        StringBuilder out = new StringBuilder();
+
+        while(resultSet.next() && offset < buffer) { // skip the first 50 results
+            offset++;
+        }
+        
+        //iterate through each row of the ResultSet
+        int count = 1;
+        while (resultSet.next() && count <= 50) { // limit to 50 results for readability
+            String routeNumber = resultSet.getString("routeNumber");
+            String stopLocation = resultSet.getString("Stop Location");
+            String bus = resultSet.getString("bus");
+            String arrivalTime = resultSet.getString("arrivalTime");
+            String day = resultSet.getString("day");
+            
+            out.append("Route " + routeNumber + " - " + "Bus " + bus + " Stop Location " + stopLocation + " on " + day + " at " + arrivalTime + " count " + count + "\n");
+            count++;
+        }
+
+        buffer += 50; // increment buffer for next call
         
         return out.toString();
     }

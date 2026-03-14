@@ -9,7 +9,7 @@ public class ServerDriver {
 
 	private static Connection connection;
 	private static final String DB_URL = "jdbc:postgresql://localhost/ptsssdb";
-	private static final String PASSWORD = "***"; //YOUR PASSWORD
+	private static final String PASSWORD = "Claudio77!"; //YOUR PASSWORD
 	
 	/* global prepared query objects */
 	private static PreparedStatement getSemiYearlyScore;
