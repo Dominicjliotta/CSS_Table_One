@@ -64,6 +64,7 @@ public class ClientDriver {
 		System.out.println("1 - getSortedStopList(destination, weekDay)");
 		System.out.println("2 - updateIncident(incidentUUID, newDescription?, newTags[]?)");
 		System.out.println("3 - getAllArrivals()");
+		System.out.println("4 - getBuses(routeNumber)");
 		System.out.println("etc...");
 		
 	}
@@ -89,6 +90,9 @@ public class ClientDriver {
 			return;
 		case "3":
 			new ClientApiGetAllArrivals().execute(scanner);
+			return;
+		case "4":
+			new ClientApiGetBuses().execute(scanner);
 			return;
 		}
 		

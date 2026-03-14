@@ -20,6 +20,7 @@ public class ServerDriver {
 	private static PreparedStatement setIncidentDescription;
 	private static PreparedStatement addIncidentTag;
 	private static PreparedStatement getAllArrivals;
+	private static PreparedStatement getBuses;
 	
 	//connects to the database, sets up prepared statements, etc.
 	public static boolean setup() {
@@ -92,6 +93,7 @@ public class ServerDriver {
 		query_addIncidentTag();
 		query_setIncidentDescription();
 		query_getAllArrivals();
+		query_getBuses();
 	}
 	
 	/*
@@ -231,6 +233,11 @@ public class ServerDriver {
 		
 	}
 	
+	/*
+	 * Gets all arrivals at all stops, sorted by route number, day, and time
+	 *
+	 * PARAMS: none
+	 */
 	public static PreparedStatement query_getAllArrivals() throws Exception {
 		
 		if (getAllArrivals != null) return getAllArrivals;
@@ -246,6 +253,23 @@ public class ServerDriver {
 				+ "ORDER BY routeNumber, day, arrivalTime;");
 
 		return getAllArrivals;
+		
+	}
+
+	/*
+	 * Gets all buses for a specific route number
+	 *
+	 * PARAMS:
+	 * 1 - routeNumber (string)
+	 */
+	public static PreparedStatement query_getBuses() throws Exception {
+		
+		if (getBuses != null) return getBuses;
+		
+		getBuses = connection.prepareStatement(
+				"SELECT ID, name FROM Bus WHERE routeNumber = ?;");
+		
+		return getBuses;
 		
 	}
 	
