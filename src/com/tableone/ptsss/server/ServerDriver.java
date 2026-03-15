@@ -21,7 +21,7 @@ public class ServerDriver {
 	private static PreparedStatement addIncidentTag;
 	private static PreparedStatement getAllArrivals;
 	private static PreparedStatement getBuses;
-		private static PreparedStatement getRecentTags;
+	private static PreparedStatement getRecentTags;
 	private static PreparedStatement addContentTag;
 	private static PreparedStatement getRouteInfo;
 	
