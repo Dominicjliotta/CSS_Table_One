@@ -21,6 +21,9 @@ public class ServerDriver {
 	private static PreparedStatement addIncidentTag;
 	private static PreparedStatement getAllArrivals;
 	private static PreparedStatement getBuses;
+		private static PreparedStatement getRecentTags;
+	private static PreparedStatement addContentTag;
+	private static PreparedStatement getRouteInfo;
 	
 	//connects to the database, sets up prepared statements, etc.
 	public static boolean setup() {
@@ -255,7 +258,6 @@ public class ServerDriver {
 		return getAllArrivals;
 		
 	}
-
 	/*
 	 * Gets all buses for a specific route number
 	 *
@@ -270,6 +272,73 @@ public class ServerDriver {
 				"SELECT ID, name FROM Bus WHERE routeNumber = ?;");
 		
 		return getBuses;
+		
+	}
+
+
+		 /*
+	 * Lists all tags from incedents from the last 6 month 
+	 *  
+	 * PARAMS:
+	 * 1 - routeNumber (string)
+	 */
+	public static PreparedStatement query_getRecentTags() throws Exception {
+		
+		if (getRecentTags != null) return getRecentTags;
+		
+		getRecentTags = connection.prepareStatement (
+			"SELECT name\r\n"
+				+ "FROM contentTag\r\n"
+    			+ "\tJOIN IncidentTags ON (contentTag.id = IncidentTags.tagID)\r\n"
+   				+ "\tJOIN Incident ON (IncidentTags.incidentID = Incident.ID)\r\n"
+    			+ "\tJOIN Stop ON (Incident.stopID = Stop.ID)\r\n"
+    			+ "\tJOIN RouteStops ON (Stop.ID = RouteStops.RouteStopId)\r\n"
+    			+ "WHERE RouteStops.routeNumber ILIKE ?" 
+				+ "AND Incident.incidentTime >= CURRENT_DATE - INTERVAL '6 months';"
+				);
+
+		return getRecentTags;
+		
+	}
+
+	 /*
+	 * Add new incident tag 
+	 *
+	 * PARAMS:
+	 * 1 - name (string)
+	 * 2 - severity (int)
+	 */
+	public static PreparedStatement query_addContentTag() throws Exception {
+		
+		if (addContentTag != null) return addContantTag;
+		
+		addContentTag = connection.prepareStatement(
+			"INSERT INTO ContentTag (name, severity)\r\n"
+			+ "VALUES (?, ?);"
+		);
+				
+		return addContentTag;
+		
+	}
+
+/*
+	 * Get Route info 
+	 *
+	 * PARAMS:
+	 * 1 - routeNumber (string)
+	 */
+	public static PreparedStatement query_getRouteInfo() throws Exception {
+		
+		if (getRouteInfo != null) return getRouteInfo;
+		
+		getRouteInfo = connection.prepareStatement(
+			"SELECT startPoint AS \"Start Location\", endPoint AS \"End Location\" \r\n"
+			+ "FROM Route\r\n"
+			+ "WHERE number = ?;"
+
+		);
+				
+		return getRouteInfo;
 		
 	}
 	
