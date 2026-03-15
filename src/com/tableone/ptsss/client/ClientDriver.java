@@ -65,6 +65,10 @@ public class ClientDriver {
 		System.out.println("2 - updateIncident(incidentUUID, newDescription?, newTags[]?)");
 		System.out.println("3 - getAllArrivals()");
 		System.out.println("4 - getBuses(routeNumber)");
+		System.out.println("5 - getRouteInfo(routeNumber)");
+		System.out.println("6 - createTag(name, severity)");
+		System.out.println("7 - getRecentTags(routeNumber");
+
 		System.out.println("etc...");
 		
 	}
@@ -93,6 +97,15 @@ public class ClientDriver {
 			return;
 		case "4":
 			new ClientApiGetBuses().execute(scanner);
+			return;
+		case "5":
+			new ClientApiGetRouteInfo().execute(scanner);
+			return;
+		case "6":
+			new ClientApiCreateTag().execute(scanner);
+			return;
+		case "7":
+			new ClientApiGetRecentTags().execute(scanner);
 			return;
 		}
 		
