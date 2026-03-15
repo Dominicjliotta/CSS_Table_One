@@ -24,6 +24,8 @@ public class ServerDriver {
 	private static PreparedStatement getRecentTags;
 	private static PreparedStatement addContentTag;
 	private static PreparedStatement getRouteInfo;
+	private static PreparedStatement routeExists;
+	
 	
 	//connects to the database, sets up prepared statements, etc.
 	public static boolean setup() {
@@ -321,7 +323,7 @@ public class ServerDriver {
 		
 	}
 
-/*
+	 /*
 	 * Get Route info 
 	 *
 	 * PARAMS:
@@ -340,6 +342,22 @@ public class ServerDriver {
 				
 		return getRouteInfo;
 		
+	}
+
+	 /*
+	 * Does route number exist 
+	 *
+	 * PARAMS:
+	 * 1 - routeNumber (string)
+	 */
+
+	public static PreparedStatement query_routeExists() throws Exception {
+    if (routeExists != null) return routeExists;
+
+    routeExists = connection.prepareStatement(
+        "SELECT 1 FROM Route WHERE number ILIKE ?;"
+    );
+    return routeExists;
 	}
 	
 }
