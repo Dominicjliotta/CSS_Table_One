@@ -298,7 +298,7 @@ public class ServerDriver {
    				+ "\tJOIN Incident ON (IncidentTags.incidentID = Incident.ID)\r\n"
     			+ "\tJOIN Stop ON (Incident.stopID = Stop.ID)\r\n"
     			+ "\tJOIN RouteStops ON (Stop.ID = RouteStops.RouteStopId)\r\n"
-    			+ "WHERE RouteStops.routeNumber ILIKE ?" 
+    			+ "WHERE RouteStops.routeNumber ILIKE ? " 
 				+ "AND Incident.incidentTime >= CURRENT_DATE - INTERVAL '6 months';"
 				);
 
@@ -377,7 +377,7 @@ public class ServerDriver {
     contentTagExists = connection.prepareStatement(
         "SELECT 1 FROM ContentTag WHERE name ILIKE ?;"
     );
-    return contantTagExists;
+    return contentTagExists;
 	}
 	
 }

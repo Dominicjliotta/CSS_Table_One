@@ -3,8 +3,6 @@ package com.tableone.ptsss.server;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import static java.awt.SystemColor.info;
-
 public class ServerApiCreateTag extends ServerApi<Boolean> {
 
     private String name;

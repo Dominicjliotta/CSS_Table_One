@@ -55,7 +55,7 @@ public class ServerApiGetRecentTags extends ServerApi<String> {
             //get each tag from query
             String contentName = rs.getString("name");
             String contentSeverity = rs.getString("severity");
-            out.append("\nContent Tag: " + contentName);
+            out.append("\nContent Tag: " + contentName + " (" + contentSeverity + ")");
         }
 
         //if the query returned nothing, say "NONE"
