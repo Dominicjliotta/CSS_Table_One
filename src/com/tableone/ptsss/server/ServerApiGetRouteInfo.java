@@ -27,7 +27,7 @@ public class ServerApiGetRouteInfo extends ServerApi<String> {
     @Override
     protected String completeRequest() throws Exception {
 
-        //reject any nonexsistant route numbers
+        //reject any non-existant route numbers
         PreparedStatement ps = ServerDriver.query_routeExists();
         ps.setString(1, this.routeNumber);
         ResultSet Rnumber = ps.executeQuery();

@@ -25,6 +25,9 @@ public class ServerDriver {
 	private static PreparedStatement addContentTag;
 	private static PreparedStatement getRouteInfo;
 	private static PreparedStatement routeExists;
+	private static PreparedStatement contentTagExists;
+
+
 	
 	
 	//connects to the database, sets up prepared statements, etc.
@@ -358,6 +361,23 @@ public class ServerDriver {
         "SELECT 1 FROM Route WHERE number ILIKE ?;"
     );
     return routeExists;
+	}
+
+
+	/*
+	 * Does Content Tag exist 
+	 *
+	 * PARAMS:
+	 * 1 - name (string)
+	 */
+
+	public static PreparedStatement query_contentTagExists() throws Exception {
+    if (contentTagExists != null) return contentTagExists;
+
+    contentTagExists = connection.prepareStatement(
+        "SELECT 1 FROM ContentTag WHERE name ILIKE ?;"
+    );
+    return contantTagExists;
 	}
 	
 }

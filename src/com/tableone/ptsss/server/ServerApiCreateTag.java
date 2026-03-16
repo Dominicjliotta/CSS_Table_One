@@ -37,6 +37,13 @@ public class ServerApiCreateTag extends ServerApi<Boolean> {
     @Override
     protected Boolean completeRequest() throws Exception {
 
+
+        //reject any pre-existing content tag  
+        PreparedStatement ps = ServerDriver.query_contentTagExists();
+        ps.setString(1, this.name);
+        ResultSet exists = ps.executeQuery();
+        if (exists.next()) throw new Exception("Content Tag already exists!");
+
         try {
             //begin a transaction because this performs CRUD operations
             ServerDriver.beginTX();

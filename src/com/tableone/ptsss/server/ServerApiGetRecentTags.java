@@ -28,6 +28,12 @@ public class ServerApiGetRecentTags extends ServerApi<String> {
     @Override
     protected String completeRequest() throws Exception {
 
+        //reject any non-existant route numbers
+        PreparedStatement ps = ServerDriver.query_routeExists();
+        ps.setString(1, this.routeNumber);
+        ResultSet Rnumber = ps.executeQuery();
+        if (!Rnumber.next()) throw new Exception("Invalid Route Number!");
+
         //fetch the query for this api call
         PreparedStatement tagPs = ServerDriver.query_getRecentTags();
         //set the parameters
