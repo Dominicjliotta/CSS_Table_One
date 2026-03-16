@@ -3,7 +3,6 @@ package com.tableone.ptsss.client;
 import java.util.Scanner;
 import com.tableone.ptsss.server.ServerApiGetRouteInfo;
 
-
 public class ClientApiGetRouteInfo extends ClientApi {
 
     private String routeNumber;
@@ -20,12 +19,6 @@ public class ClientApiGetRouteInfo extends ClientApi {
         System.out.print("Enter Route Number: ");
         this.routeNumber = scanner.nextLine().trim();
 
-        //reject any nonexsistant route numbers
-        PreparedStatement ps = ServerDriver.query_routeExists();
-        ps.setString(1, this.routeNumber);
-        ResultSet rs = ps.executeQuery();
-        if (!rs.next()) throw new Exception("Invalid Route Number!");
-
     }
 
 
@@ -33,7 +26,7 @@ public class ClientApiGetRouteInfo extends ClientApi {
     protected void performCall() throws Exception {
 
         //make the call to the server and get the output
-        ServerApiGetRouteInfo serverApi = new ServerAPIGetRouteInfo();
+        ServerApiGetRouteInfo serverApi = new ServerApiGetRouteInfo();
         String output = serverApi.call(this.routeNumber);
 
         //output the message

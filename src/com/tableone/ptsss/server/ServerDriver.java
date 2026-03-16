@@ -312,7 +312,7 @@ public class ServerDriver {
 	 */
 	public static PreparedStatement query_addContentTag() throws Exception {
 		
-		if (addContentTag != null) return addContantTag;
+		if (addContentTag != null) return addContentTag;
 		
 		addContentTag = connection.prepareStatement(
 			"INSERT INTO ContentTag (name, severity)\r\n"
