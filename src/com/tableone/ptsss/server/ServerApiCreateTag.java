@@ -31,7 +31,7 @@ public class ServerApiCreateTag extends ServerApi<Boolean> {
 
         //cast and store the arguments into variables
         this.name = (String) args[0];
-        this.severity = (int) args[0];
+        this.severity = (int) args[1];
     }
 
     @Override
