@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 
 public class ServerApiGetIncidents extends ServerApi<String> {
 
-	private string RouteNumber;
+	private String routeNumber;
 
 	@Override
 	protected void parseRequest(Object[] args) throws Exception {
@@ -40,9 +40,10 @@ public class ServerApiGetIncidents extends ServerApi<String> {
 		incidentPs.setString(1, this.routeNumber);
 		ResultSet rs = incidentPs.executeQuery();
 
-		StringBuilder out = new StringBuilder();
-		out.append("List of Incidents on Route " + this.RouteNumber.toUpperCase() + ":");
-		out.append("\n================================");
+		System.out.println("List of Incidents on Route " + this.routeNumber.toUpperCase() + ":");
+		System.out.println("================================");
+		
+		boolean isEmpty = true;
 
 		while (rs.next()) {
 			isEmpty = false;
@@ -51,7 +52,7 @@ public class ServerApiGetIncidents extends ServerApi<String> {
 			String incidentTime = rs.getString("timestamp");
 			String incidentLoc = rs.getString("stop");
 			String incidentTag = rs.getString("tag");
-			out.append("\n" + incidentTag + " at stop " + incidentLoc + " at " + incidentTime);
+			out.append(incidentTag + " at stop " + incidentLoc + " at " + incidentTime);
 		}
 
 		// if the query returned nothing, say "NONE"
