@@ -1,5 +1,8 @@
 package com.tableone.ptsss.client;
 
+import java.security.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Scanner;
 
 import com.tableone.ptsss.server.ServerApiSubmitIncident;
@@ -12,7 +15,7 @@ import com.tableone.ptsss.server.ServerApiSubmitIncident;
 public class ClientApiSubmitIncident extends ClientApi {
 
     private String stopLocation;
-    private String time;
+    private Timestamp time;
     private String description;
     private String[] tags;
 
@@ -33,55 +36,12 @@ public class ClientApiSubmitIncident extends ClientApi {
             throw new Exception("Stop location cannot be blank!");
         }
 
-        // TIME INPUT (year, month, day, time)
-        System.out.print("Year (YYYY): ");
-        String yearStr = scanner.nextLine();
-
-        System.out.print("Month (1-12): ");
-        String monthStr = scanner.nextLine();
-
-        System.out.print("Day (1-31): ");
-        String dayStr = scanner.nextLine();
-
-        System.out.print("Time (HHMM military): ");
+        // TIME INPUT 
+        System.out.print("Enter Time (ex. MM/DD/yyyy HH:MM [AM|PM]): ");
         String timeStr = scanner.nextLine();
+        this.time = stringToTimestamp(timeStr);
 
-        int year;
-        int month;
-        int day;
-
-        try {
-            year = Integer.parseInt(yearStr);
-            month = Integer.parseInt(monthStr);
-            day = Integer.parseInt(dayStr);
-        } catch (Exception e) {
-            throw new Exception("Date values must be valid numbers.");
-        }
-
-        // Basic bounds checks
-        if (month < 1 || month > 12)
-            throw new Exception("Month must be between 1 and 12.");
-
-        if (day < 1 || day > 31)
-            throw new Exception("Day must be between 1 and 31.");
-
-        // Validate time format
-        if (!timeStr.matches("\\d{4}"))
-            throw new Exception("Time must be in HHMM military format (example: 1830).");
-
-        int hour = Integer.parseInt(timeStr.substring(0, 2));
-        int minute = Integer.parseInt(timeStr.substring(2, 4));
-
-        if (hour < 0 || hour > 23)
-            throw new Exception("Hour must be between 00 and 23.");
-
-        if (minute < 0 || minute > 59)
-            throw new Exception("Minutes must be between 00 and 59.");
-
-        // Build final timestamp string
-        this.time = String.format("%04d-%02d-%02d %02d:%02d",
-                year, month, day, hour, minute);
-
+        
         // DESCRIPTION
         System.out.print("Description: ");
         this.description = scanner.nextLine();
@@ -117,7 +77,7 @@ public class ClientApiSubmitIncident extends ClientApi {
         // Call the server API
         ServerApiSubmitIncident serverApi = new ServerApiSubmitIncident();
 
-        String uuid = serverApi.call(
+        String output  = serverApi.call(
                 this.stopLocation,
                 this.time,
                 this.description,
@@ -125,5 +85,79 @@ public class ClientApiSubmitIncident extends ClientApi {
 
         // Print returned UUID
         printOutput("Incident submitted successfully.\nUUID: " + uuid);
+    }
+
+
+
+    // helper function to convert a properly formatted string into a sql timestamp object
+    private static Timestamp stringToTimestamp(String s) throws Exception {
+        
+        String formatError = "Timestamp must be in the format: MM/DD/yyyy HH:MM [AM|PM]";
+        
+        s = s.toLowerCase().trim();
+        
+        //format checks
+        String[] args = s.split(" ");
+        if (args.length != 3) throw new Exception(formatError);
+        
+        String[] dateArgs = args[0].split("/");
+        if (dateArgs.length != 3) throw new Exception(formatError);
+        if (dateArgs[0].length() > 2) throw new Exception(formatError);
+        if (dateArgs[1].length() > 2) throw new Exception(formatError);
+        if (dateArgs[2].length() < 4) throw new Exception(formatError);
+        
+        String[] timeArgs = args[1].split(":");
+        if (timeArgs.length != 2) throw new Exception(formatError);
+        if (timeArgs[0].length() > 2) throw new Exception(formatError);
+        if (timeArgs[1].length() != 2) throw new Exception(formatError);
+        
+        //parse day/month/year
+        int day = 0;
+        int month = 0;
+        int year = 0;
+        
+        try {
+            day = Integer.parseInt(dateArgs[1]);
+            month = Integer.parseInt(dateArgs[0]);
+            year = Integer.parseInt(dateArgs[2]);
+        } catch (Exception e) {
+            throw new Exception("Invalid values in MM/DD/YYYY");
+        }
+        
+        //day/month bound checks
+        if (day < 1 || day > 31) throw new Exception("Day must be between 1 and 31");
+        if (month < 1 || month > 12) throw new Exception("Month must be between 1 and 12");
+        
+        //check if a valid am/pm was given
+        String ampm = args[2];
+        if (!ampm.equals("am") && !ampm.equals("pm")) throw new Exception("AM or PM must be specified for the time");
+        
+        //parse hour/minute
+        int hour = 0;
+        int minute = 0;
+        
+        try {
+            hour = Integer.parseInt(timeArgs[0]);
+            minute = Integer.parseInt(timeArgs[1]);
+        } catch (Exception e) {
+            throw new Exception("Invalid values in HH:MM");
+        }
+        
+        //hour/minute bound checks
+        if (hour < 1 || hour > 12) throw new Exception("Hour must be between 1 and 12");
+        if (minute < 0 || minute > 59) throw new Exception("Minute must be between 0 and 59");
+        
+        //convert hour to 0-23 range
+        if (hour == 12) hour = 0;
+        if (ampm.equals("pm")) hour += 12;
+        
+        //convert everything to a LocalDateTime
+        LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, minute, 0);
+        //get the unix timestamp in milliseconds from the LocalDateTime
+        long unixTimestamp = dateTime.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000;
+        
+        //construct and return a new sql timestamp with the unix timestamp
+        return new Timestamp(unixTimestamp);
+        
     }
 }
