@@ -5,6 +5,14 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/*--------------------------------------------------------------------*/
+/* ServerApiGetIncidentsByStop                                        */
+/* Author: Lily                                                       */
+/*                                                                    */
+/* getIncidentsByStop(locationName)                                   */
+/* Returns a list of incident information based on the stop location. */
+/*--------------------------------------------------------------------*/
+
 public class ServerApiGetIncidentsByStop extends ServerApi<String> {
 
     private String locationName;
