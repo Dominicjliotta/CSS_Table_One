@@ -113,6 +113,9 @@ public class ClientDriver {
 			case "10":
 				new ClientApiGetContentTags().execute(scanner);
 				return;
+			case "11":
+				new ClientApiGetRouteStops().execute(scanner);
+				return;
 		}
 
 		throw new Exception("Unknown action: \"" + input + "\"");

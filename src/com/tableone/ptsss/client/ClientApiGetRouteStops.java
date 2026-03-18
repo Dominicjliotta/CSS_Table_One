@@ -4,27 +4,32 @@ import java.util.Scanner;
 
 import com.tableone.ptsss.server.ServerApiGetRouteStops;
 
-/*
- * Client-side API class for getting all stops for a route
- */
+/*--------------------------------------------------------------------------*/
+/* ClientApiGetRouteStops                                                   */
+/* Author: Lily                                                             */
+/*                                                                          */
+/* getRouteInfo(routeNumber)                                                */
+/* Returns a list of stops on a route including location and arrival times. */
+/*--------------------------------------------------------------------------*/
+
 public class ClientApiGetRouteStops extends ClientApi {
 
     private String routeNumber;
 
     @Override
     protected String getName() {
-        return "getRouteStops()";
+        return "getRouteStops(routeNumber)";
     }
 
     @Override
     protected void parseRequest(Scanner scanner) throws Exception {
 
-        System.out.print("Route Number: ");
-        this.routeNumber = scanner.nextLine();
+    	//prompt the user for a route number
+        System.out.print("Route number: ");
+        this.routeNumber = scanner.nextLine().trim();
 
-        if (this.routeNumber.isEmpty()) {
-            throw new Exception("Route number cannot be empty.");
-        }
+        if (this.routeNumber.isEmpty()) throw new Exception("Route number cannot be blank!");
+        
     }
 
     @Override
@@ -34,6 +39,7 @@ public class ClientApiGetRouteStops extends ClientApi {
         String output = serverApi.call(this.routeNumber);
 
         printOutput(output);
+        
     }
 
 }
