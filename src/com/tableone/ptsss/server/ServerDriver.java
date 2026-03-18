@@ -30,7 +30,7 @@ public class ServerDriver {
 	private static PreparedStatement getIncidents;
 	private static PreparedStatement getContentTags;
 	private static PreparedStatement getRouteStops;
-
+	private static PreparedStatement getIncidentsByStop;
 	// connects to the database, sets up prepared statements, etc.
 	public static boolean setup() {
 
@@ -106,8 +106,9 @@ public class ServerDriver {
 		query_getAllArrivals();
 		query_getBuses();
 		query_getRouteStops();
+		query_getIncidentsByStop();
 	}
-	
+
 	/*===================================================*/
 	/* /!\ ALL PREPARED STATEMENTS ARE DEFINED BELOW /!\ */
 	/*===================================================*/
@@ -197,7 +198,7 @@ public class ServerDriver {
 
 	/*
 	 * deletes all tags for an incident
-	 * 
+	 *
 	 * PARAMS:
 	 * 1 - incidentUUID (string)
 	 */
@@ -216,7 +217,7 @@ public class ServerDriver {
 
 	/*
 	 * adds a tag to an incident
-	 * 
+	 *
 	 * PARAMS:
 	 * 1 - incidentUUID (string)
 	 * 2 - tag (string)
@@ -236,7 +237,7 @@ public class ServerDriver {
 
 	/*
 	 * change the description of an incident
-	 * 
+	 *
 	 * PARAMS:
 	 * 1 - description (string)
 	 * 2 - incidentUUID (string)
@@ -299,7 +300,7 @@ public class ServerDriver {
 
 	/*
 	 * lists all tags from incidents from the last 6 month
-	 * 
+	 *
 	 * PARAMS:
 	 * 1 - routeNumber (string)
 	 */
@@ -414,7 +415,7 @@ public class ServerDriver {
 
 		submitIncident = connection.prepareStatement(
 			"INSERT INTO incident (stopid, incidenttime, description, createdat, uuid) " +
-			"VALUES " + 
+			"VALUES " +
 			"((SELECT id FROM stop WHERE locationname ILIKE ? LIMIT 1), " + // stopid
 			"?, " + // time
 			"?,  " + // description
@@ -472,7 +473,7 @@ public class ServerDriver {
 
 		return getContentTags;
 	}
-	
+
 	/*
 	 * gets all stops given a route number
 	 *
@@ -494,5 +495,29 @@ public class ServerDriver {
 		return getRouteStops;
 
 	}
+
+	/*
+ * Gets all incidents for a stop location
+ *
+ * PARAMS:
+ * 1 - locationName (string)
+ */
+public static PreparedStatement query_getIncidentsByStop() throws Exception {
+
+    if (getIncidentsByStop != null) return getIncidentsByStop;
+
+    getIncidentsByStop = connection.prepareStatement(
+        "SELECT Stop.locationName, Incident.incidentTime, Incident.description, ContentTag.name AS tag\n"
+        + "FROM Stop\n"
+        + "    JOIN Incident ON (Incident.stopID = Stop.ID)\n"
+        + "    JOIN IncidentTags ON (IncidentTags.incidentID = Incident.ID)\n"
+        + "    JOIN ContentTag ON (ContentTag.ID = IncidentTags.tagID)\n"
+        + "WHERE Stop.locationName ILIKE ?\n"
+        + "ORDER BY Incident.incidentTime DESC;"
+    );
+
+    return getIncidentsByStop;
+
+}
 
 }
