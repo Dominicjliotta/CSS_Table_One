@@ -71,6 +71,8 @@ public class ClientDriver {
 		System.out.println("9 - getIncidents(routeNumber)");
 		System.out.println("10 - getContentTags()");
 		System.out.println("11 - getRouteStops(routeNumber)");
+		System.out.println("12 - getIncidentsByStop(locationName)");
+		System.out.println("13 - getWeeklyScore(routeNumber)");
 
 	}
 
@@ -115,6 +117,12 @@ public class ClientDriver {
 				return;
 			case "11":
 				new ClientApiGetRouteStops().execute(scanner);
+				return;
+			case "12":
+				new ClientApiGetIncidentsByStop().execute(scanner);
+				return;
+			case "13":
+				new ClientApiGetWeeklyScore().execute(scanner);
 				return;
 		}
 

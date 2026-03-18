@@ -4,13 +4,13 @@ import java.util.Scanner;
 
 import com.tableone.ptsss.server.ServerApiGetWeeklyScore;
 
-/*--------------------------------------------------------------------------------*/
-/* ClientApiGetWeeklyScore                                                        */
-/*                                                                                */
-/* getWeeklyScore(routeNumber)                                                    */
-/* Prompts the user for a route number and displays the weekly safety score       */
-/* (last 7 days) for that route.                                                  */
-/*--------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------*/
+/* ClientApiGetWeeklyScore                                         */
+/* Author: Lily                                                    */
+/*                                                                 */
+/* getWeeklyScore(routeNumber)                                     */
+/* Returns the weekly score of a given route from the last 7 days. */
+/*-----------------------------------------------------------------*/
 
 public class ClientApiGetWeeklyScore extends ClientApi {
 
@@ -27,9 +27,8 @@ public class ClientApiGetWeeklyScore extends ClientApi {
         System.out.print("Route number: ");
         this.routeNumber = scanner.nextLine().trim();
 
-        if (this.routeNumber.isEmpty()) {
-            throw new Exception("Route number cannot be blank!");
-        }
+        if (this.routeNumber.isEmpty()) throw new Exception("Route number cannot be blank!");
+        
     }
 
     @Override
@@ -39,6 +38,8 @@ public class ClientApiGetWeeklyScore extends ClientApi {
         String output = serverApi.call(this.routeNumber);
 
         printOutput(output);
+        
     }
+    
 }
 
