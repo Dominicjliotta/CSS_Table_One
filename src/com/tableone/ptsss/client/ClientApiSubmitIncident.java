@@ -1,16 +1,20 @@
 package com.tableone.ptsss.client;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Scanner;
 
 import com.tableone.ptsss.server.ServerApiSubmitIncident;
 
-/*
- * Client API for submitting a transit incident.
- * submitIncident(stopLocation, time, description, tags[])
-*/
+/*------------------------------------------------------------------------------*/
+/* ClientApiSubmitIncident                                                      */
+/* Author: David                                                                */
+/*                                                                              */
+/* submitIncident(stopLocation, time, description, tags[])                      */
+/* Submits an incident for a stop containing content tags, stop location,       */
+/* description, and time of incident. Returns the UUID of the created incident. */
+/*------------------------------------------------------------------------------*/
 
 public class ClientApiSubmitIncident extends ClientApi {
 
@@ -23,73 +27,64 @@ public class ClientApiSubmitIncident extends ClientApi {
     protected String getName() {
         return "submitIncident(stopLocation, time, description, tags[])";
     }
-
+    
     @Override
     protected void parseRequest(Scanner scanner) throws Exception {
 
-        // stopLocation validation
-        // runs query to check if location exists (possibly)
+        //prompt the user for a stop location
         System.out.print("Stop Location: ");
-        this.stopLocation = scanner.nextLine();
+        this.stopLocation = scanner.nextLine().trim();
 
-        if (this.stopLocation.isEmpty()) {
-            throw new Exception("Stop location cannot be blank!");
-        }
+        //check for blank
+        if (this.stopLocation.isEmpty()) throw new Exception("Stop location cannot be blank!");
 
-        // TIME INPUT 
-        System.out.print("Enter Time (ex. MM/DD/yyyy HH:MM [AM|PM]): ");
-        String timeStr = scanner.nextLine();
-        this.time = stringToTimestamp(timeStr);
-
+        //prompt the user for a time
+        System.out.print("Time of incident (ex. MM/DD/yyyy HH:MM [AM|PM]): ");
+        this.time = stringToTimestamp(scanner.nextLine());
         
-        // DESCRIPTION
+        //prompt the user for a description
         System.out.print("Description: ");
-        this.description = scanner.nextLine();
+        this.description = scanner.nextLine().trim();
+        
+        //check for blank
+        if (this.description.isEmpty()) throw new Exception("Description cannot be blank!");
 
-        if (this.description.isEmpty()) {
-            throw new Exception("Description cannot be blank!");
-        }
-
-        // TAGS
+        //prompt the user for tags
         System.out.print("Tags (comma separated): ");
-        String tagsInput = scanner.nextLine();
+        String tagsInput = scanner.nextLine().trim();
+        
+        //check for blank
+        if (tagsInput.isEmpty()) throw new Exception("At least one tag must be provided!");
 
-        if (tagsInput.isEmpty()) {
-            throw new Exception("At least one tag must be provided!");
-        }
-
-        // Convert comma-separated tags into array
+        //convert comma-separated tags into array
         this.tags = tagsInput.split(",");
 
-        // Trim whitespace from tags
+        //trim whitespace from tags
         for (int i = 0; i < this.tags.length; i++) {
+        	
             this.tags[i] = this.tags[i].trim();
-
-            if (this.tags[i].isEmpty()) {
-                throw new Exception("Tags cannot be blank!");
-            }
+            
+            //check for blank
+            if (this.tags[i].isEmpty()) throw new Exception("Tags cannot be blank!");
+            
         }
+        
     }
 
     @Override
     protected void performCall() throws Exception {
 
-        // Call the server API
+        //call the server api
         ServerApiSubmitIncident serverApi = new ServerApiSubmitIncident();
+        //the server returns a uuid that must be given to the user
+        String uuid = serverApi.call(this.stopLocation, this.time, this.description, this.tags);
 
-        String output  = serverApi.call(
-                this.stopLocation,
-                this.time,
-                this.description,
-                this.tags);
-
-        // Print returned UUID
-        printOutput("Incident submitted successfully.\nUUID: " + uuid);
+        //print the returned uuid
+        printOutput("Incident submitted successfully!\nUUID: " + uuid);
+        
     }
 
-
-
-    // helper function to convert a properly formatted string into a sql timestamp object
+    //helper function to convert a properly formatted string into a sql timestamp object
     private static Timestamp stringToTimestamp(String s) throws Exception {
         
         String formatError = "Timestamp must be in the format: MM/DD/yyyy HH:MM [AM|PM]";
@@ -121,7 +116,7 @@ public class ClientApiSubmitIncident extends ClientApi {
             month = Integer.parseInt(dateArgs[0]);
             year = Integer.parseInt(dateArgs[2]);
         } catch (Exception e) {
-            throw new Exception("Invalid values in MM/DD/YYYY");
+            throw new Exception("Invalid values in MM/DD/yyyy");
         }
         
         //day/month bound checks
@@ -160,4 +155,5 @@ public class ClientApiSubmitIncident extends ClientApi {
         return new Timestamp(unixTimestamp);
         
     }
+    
 }

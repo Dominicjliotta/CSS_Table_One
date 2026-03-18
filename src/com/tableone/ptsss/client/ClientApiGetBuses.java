@@ -5,39 +5,42 @@ import com.tableone.ptsss.server.ServerApiGetBuses;
 
 public class ClientApiGetBuses extends ClientApi {
 
+	/*-----------------------------------------------*/
+	/* ClientApiGetBuses                             */
+	/* Author: Dom                                   */
+	/*                                               */
+	/* getBuses(routeNumber)                         */
+	/* Returns a list of bus names on a given route. */
+	/*-----------------------------------------------*/
+	
     private String routeNumber;
-
-    public void execute(Scanner scanner) throws Exception {
-		
-		System.out.println("\n--- " + this.getName() + " ---\n");
-		
-		this.parseRequest(scanner);
-		this.performCall();
-
-		
-	}
 
     @Override
     protected String getName() {
-        return "getBuses()";
+        return "getBuses(routeNumber)";
     }
 
     @Override
     protected void parseRequest(Scanner scanner) throws Exception {
+    	
+    	//prompt the user for a route number
         System.out.print("Route number: ");
-        String input = scanner.nextLine().trim();
-        try {
-            this.routeNumber = input; 
-        } catch (NumberFormatException e) {
-            throw new Exception("Invalid route number! Please enter a valid integer.");
-        }
+        this.routeNumber = scanner.nextLine().trim();
+        
+        if (this.routeNumber.isEmpty()) throw new Exception("Route number cannot be blank!");
+        
     }
 
     @Override
     protected void performCall() throws Exception {
+    	
+    	//make the call to the server and get the output
         ServerApiGetBuses serverApi = new ServerApiGetBuses();
         String output = serverApi.call(this.routeNumber);
-        System.out.println(output);
+        
+        //output the message
+        printOutput(output);
+        
     }
     
 }

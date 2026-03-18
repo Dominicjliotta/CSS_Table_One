@@ -4,6 +4,16 @@ import java.util.Scanner;
 
 import com.tableone.ptsss.server.ServerApiGetSortedStopList;
 
+/*--------------------------------------------------------------------------*/
+/* ClientApiGetSortedStopList                                               */
+/* Author: Kareem                                                           */
+/*                                                                          */
+/* getSortedStopList(destination, weekDay)                                  */
+/* Returns a list of bus stop times (Showing route number, arrival time,    */
+/* and semi-yearly score for route) for a given destination on a given day  */
+/* of the week. The list is sorted by time of arrival at the destination.   */
+/*--------------------------------------------------------------------------*/
+
 public class ClientApiGetSortedStopList extends ClientApi {
 
 	private String weekDay;
@@ -17,14 +27,14 @@ public class ClientApiGetSortedStopList extends ClientApi {
 	@Override
 	protected void parseRequest(Scanner scanner) throws Exception {
 		
-		//ask the user for a destination and save the input
+		//prompt the user for a destination
 		System.out.print("Destination: ");
 		this.destination = scanner.nextLine().trim();
 		
 		//make sure destination isnt blank
 		if (this.destination.isEmpty()) throw new Exception("Destination cannot be blank!");
 		
-		//ask the user for a week day and save the input
+		//prompt the user for a week day
 		System.out.print("Day of the week: ");
 		this.weekDay = scanner.nextLine().toLowerCase().trim();
 		

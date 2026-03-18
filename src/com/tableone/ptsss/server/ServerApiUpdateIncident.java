@@ -2,6 +2,18 @@ package com.tableone.ptsss.server;
 
 import java.sql.PreparedStatement;
 
+/*-------------------------------------------------------------------------------------*/
+/* ServerApiUpdateIncident                                                             */
+/* Author: Kareem                                                                      */
+/*                                                                                     */
+/* updateIncident(incidentUUID, newDescription?, newTags[]?)                           */
+/* Sets the description and tags of the incident with the given UUID to newDescription */
+/* and newTags[] respectively. newDescription and newTags[] are optional parameters in */
+/* case the user wants to change one but not both. UUID is a separate ID column, and   */
+/* not a surrogate key. Returns true if the update was successful or false if an error */
+/* occurred.                                                                           */
+/*-------------------------------------------------------------------------------------*/
+
 public class ServerApiUpdateIncident extends ServerApi<Boolean> {
 
 	private String uuid;
@@ -31,7 +43,6 @@ public class ServerApiUpdateIncident extends ServerApi<Boolean> {
 			throw new Exception("ServerApiUpdateIncident received invalid type for newTags");
 		}
 		
-		//cast and store the arguments into variables
 		this.uuid = (String)args[0];
 		this.description = (String)args[1];
 		this.tags = (String[])args[2];

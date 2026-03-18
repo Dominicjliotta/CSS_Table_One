@@ -3,11 +3,18 @@ package com.tableone.ptsss.server;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/*--------------------------------------------------------------------------------*/
+/* ServerApiCreateTag                                                             */
+/* Author: Melissa                                                                */
+/*                                                                                */
+/* createTag(name, severity)                                                      */
+/* Creates a new incident content tag. Returns true on success, false on failure. */
+/*--------------------------------------------------------------------------------*/
+
 public class ServerApiCreateTag extends ServerApi<Boolean> {
 
     private String name;
     private int severity;
-
 
     @Override
     protected void parseRequest(Object[] args) throws Exception {
@@ -26,46 +33,46 @@ public class ServerApiCreateTag extends ServerApi<Boolean> {
         if (!(args[1] instanceof Integer)) {
             throw new Exception("ServerApiCreateTag received invalid type for severity");
         }
-
-        //cast and store the arguments into variables
-        this.name = (String) args[0];
-        this.severity = (int) args[1];
+        
+        this.name = (String)args[0];
+        this.severity = (int)args[1];
     }
 
     @Override
     protected Boolean completeRequest() throws Exception {
 
-
-        //reject any pre-existing content tag  
+        //reject any pre-existing content tag
         PreparedStatement ps = ServerDriver.query_contentTagExists();
         ps.setString(1, this.name);
+        
         ResultSet exists = ps.executeQuery();
         if (exists.next()) throw new Exception("Content Tag already exists!");
 
         try {
+        	
             //begin a transaction because this performs CRUD operations
             ServerDriver.beginTX();
 
-            //fetch the query for this api call
+            //fetch the query for this api call and set the parameters
             PreparedStatement ContentTag = ServerDriver.query_addContentTag();
-            //set the parameters
             ContentTag.setString(1, this.name);
             ContentTag.setInt(2, this.severity);
-
-
+            
             //execute the query
-            ContentTag.executeQuery();
+            ContentTag.execute();
 
             //commit the transaction
             ServerDriver.commitTX();
 
+            //tag creation succeeded, return true
             return true;
 
         } catch  (Exception e) {
+        	//something went wrong! return false
             return false;
         }
+        
     }
-
 
 }
 

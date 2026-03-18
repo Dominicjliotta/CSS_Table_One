@@ -29,6 +29,7 @@ public class ServerDriver {
 	private static PreparedStatement submitIncident;
 	private static PreparedStatement getIncidents;
 	private static PreparedStatement getContentTags;
+	private static PreparedStatement getRouteStops;
 
 	// connects to the database, sets up prepared statements, etc.
 	public static boolean setup() {
@@ -104,7 +105,12 @@ public class ServerDriver {
 		query_setIncidentDescription();
 		query_getAllArrivals();
 		query_getBuses();
+		query_getRouteStops();
 	}
+	
+	/*===================================================*/
+	/* /!\ ALL PREPARED STATEMENTS ARE DEFINED BELOW /!\ */
+	/*===================================================*/
 
 	/*
 	 * query for getting a route's semi-yearly score (past 6 months)
@@ -250,7 +256,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * Gets all arrivals at all stops, sorted by route number, day, and time
+	 * gets all arrivals at all stops, sorted by route number, day, and time
 	 *
 	 * PARAMS: none
 	 */
@@ -274,7 +280,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * Gets all buses for a specific route number
+	 * gets all buses for a specific route number
 	 *
 	 * PARAMS:
 	 * 1 - routeNumber (string)
@@ -292,7 +298,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * Lists all tags from incedents from the last 6 month
+	 * lists all tags from incidents from the last 6 month
 	 * 
 	 * PARAMS:
 	 * 1 - routeNumber (string)
@@ -317,7 +323,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * Add new incident tag
+	 * add new incident content tag
 	 *
 	 * PARAMS:
 	 * 1 - name (string)
@@ -337,7 +343,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * Get Route info
+	 * get route info
 	 *
 	 * PARAMS:
 	 * 1 - routeNumber (string)
@@ -359,7 +365,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * Does route number exist
+	 * does route number exist
 	 *
 	 * PARAMS:
 	 * 1 - routeNumber (string)
@@ -375,7 +381,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * Does Content Tag exist
+	 * does content tag exist
 	 *
 	 * PARAMS:
 	 * 1 - name (string)
@@ -391,7 +397,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * Submit Incident
+	 * submit incident
 	 *
 	 * PARAMS:
 	 * 1 - stopLocation
@@ -422,7 +428,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * GetIncidents
+	 * getIncidents
 	 *
 	 * PARAMS:
 	 * 1 - routeNumber
@@ -451,12 +457,11 @@ public class ServerDriver {
 	}
 
 	/*
-	 * GetContentTags
+	 * getContentTags
 	 *
 	 * PARAMS:
 	 * none
 	 */
-
 	public static PreparedStatement query_getContentTags() throws Exception {
 		if (getContentTags != null)
 			return getContentTags;
@@ -466,6 +471,28 @@ public class ServerDriver {
 		);
 
 		return getContentTags;
+	}
+	
+	/*
+	 * gets all stops given a route number
+	 *
+	 * PARAMS:
+	 * 1 - routeNumber (string)
+	 */
+	public static PreparedStatement query_getRouteStops() throws Exception {
+
+		if (getRouteStops != null) return getRouteStops;
+
+		getRouteStops = connection.prepareStatement(
+			"SELECT locationName\r\n"
+			+ "FROM Route\r\n"
+			+ "	JOIN RouteStops ON (RouteStops.routeNumber = Route.number)\r\n"
+			+ "	JOIN Stop ON (Stop.ID = RouteStops.stopID)\r\n"
+			+ "WHERE Route.number = ?;"
+		);
+
+		return getRouteStops;
+
 	}
 
 }

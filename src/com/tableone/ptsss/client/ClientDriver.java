@@ -59,9 +59,7 @@ public class ClientDriver {
 	private static void printApiList() {
 
 		System.out.println("\nAll avaliable API calls:\n");
-
-		System.out.println("pretend theres an actual list here");
-		System.out.println("0 - exampleApi(name, age)");
+		
 		System.out.println("1 - getSortedStopList(destination, weekDay)");
 		System.out.println("2 - updateIncident(incidentUUID, newDescription, newTags[])");
 		System.out.println("3 - getAllArrivals()");
@@ -69,11 +67,10 @@ public class ClientDriver {
 		System.out.println("5 - getRouteInfo(routeNumber)");
 		System.out.println("6 - createTag(name, severity)");
 		System.out.println("7 - getRecentTags(routeNumber");
-		System.out.println("8 - submitIncident(stopLocation, timestamp, description, tags[])");
+		System.out.println("8 - submitIncident(stopLocation, time, description, tags[])");
 		System.out.println("9 - getIncidents(routeNumber)");
 		System.out.println("10 - getContentTags()");
-
-		System.out.println("etc...");
+		System.out.println("11 - getRouteStops(routeNumber)");
 
 	}
 
@@ -86,11 +83,6 @@ public class ClientDriver {
 			throw new Exception("No action provided!");
 
 		switch (input) {
-			case "0":
-				// EXAMPLE API IMPLEMENTATION!
-				// FOR TEAM'S REFERENCE, REMOVE BEFORE SUBMISSION
-				new ClientApiExample().execute(scanner);
-				return;
 			case "1":
 				new ClientApiGetSortedStopList().execute(scanner);
 				return;

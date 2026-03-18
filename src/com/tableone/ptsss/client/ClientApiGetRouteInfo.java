@@ -3,6 +3,15 @@ package com.tableone.ptsss.client;
 import java.util.Scanner;
 import com.tableone.ptsss.server.ServerApiGetRouteInfo;
 
+/*--------------------------------------------------------------------------------*/
+/* ClientApiGetRouteInfo                                                          */
+/* Author: Melissa                                                                */
+/*                                                                                */
+/* getRouteInfo(routeNumber)                                                      */
+/* Returns route information including start and end locations, and current score */
+/* calculated on the last 6 months.                                               */
+/*--------------------------------------------------------------------------------*/
+
 public class ClientApiGetRouteInfo extends ClientApi {
 
     private String routeNumber;
@@ -15,9 +24,11 @@ public class ClientApiGetRouteInfo extends ClientApi {
     @Override
     protected void parseRequest(Scanner scanner) throws Exception {
 
-        //ask the user for a route Number
-        System.out.print("Enter Route Number: ");
+    	//prompt the user for a route number
+        System.out.print("Route number: ");
         this.routeNumber = scanner.nextLine().trim();
+        
+        if (this.routeNumber.isEmpty()) throw new Exception("Route number cannot be blank!");
 
     }
 

@@ -7,6 +7,18 @@ import java.util.UUID;
 
 import com.tableone.ptsss.server.ServerApiUpdateIncident;
 
+/*-------------------------------------------------------------------------------------*/
+/* ClientApiUpdateIncident                                                             */
+/* Author: Kareem                                                                      */
+/*                                                                                     */
+/* updateIncident(incidentUUID, newDescription?, newTags[]?)                           */
+/* Sets the description and tags of the incident with the given UUID to newDescription */
+/* and newTags[] respectively. newDescription and newTags[] are optional parameters in */
+/* case the user wants to change one but not both. UUID is a separate ID column, and   */
+/* not a surrogate key. Returns true if the update was successful or false if an error */
+/* occurred.                                                                           */
+/*-------------------------------------------------------------------------------------*/
+
 public class ClientApiUpdateIncident extends ClientApi {
 
 	private String uuid;
@@ -21,9 +33,9 @@ public class ClientApiUpdateIncident extends ClientApi {
 	@Override
 	protected void parseRequest(Scanner scanner) throws Exception {
 		
-		//ask the user for a uuid
+		//prompt the user for a uuid
 		System.out.print("Enter the UUID for the incident to update: ");
-		this.uuid = scanner.nextLine();
+		this.uuid = scanner.nextLine().trim();
 		
 		//reject any malformed uuid
 		if (!isValidUUID(this.uuid)) throw new Exception("Invalid UUID!");
