@@ -331,3 +331,154 @@ VALUES  (5, '09:30:00', 'MON'),
         (10, '20:38:00', 'FRI'),
         (10, '20:40:00', 'SAT'),
         (10, '20:35:00', 'SUN');
+
+-- Adding Demo incidents for each route 
+-- Incidents for route 550
+WITH new_incident AS (
+    INSERT INTO incident (stopid, incidenttime, description, createdat, uuid)
+    VALUES (
+        355,
+        '2026-1-28 7:45:00',
+        'Morning rush, everyday',
+        NOW(),
+        gen_random_uuid()
+    )
+    RETURNING id
+)
+INSERT INTO incidenttags (incidentid, tagid)
+SELECT new_incident.id, contenttag.id
+FROM new_incident, contenttag
+WHERE contenttag.name IN ('Crowding');
+
+WITH new_incident AS (
+    INSERT INTO incident (stopid, incidenttime, description, createdat, uuid)
+    VALUES (
+        375,
+        '2026-2-26 10:15:00',
+        'Someone pulled a gun on the driver. Situation was deescilated adn the person was arrested. I did nto expect that to happen on my way to work',
+        NOW(),
+        gen_random_uuid()
+    )
+    RETURNING id
+)
+INSERT INTO incidenttags (incidentid, tagid)
+SELECT new_incident.id, contenttag.id
+FROM new_incident, contenttag
+WHERE contenttag.name IN ('Shooting', 'Assault');
+
+WITH new_incident AS (
+    INSERT INTO incident (stopid, incidenttime, description, createdat, uuid)
+    VALUES (
+        842,
+        '2026-3-7 15:30:00',
+        'Someone was clearly on drugs at this stop',
+        NOW(),
+        gen_random_uuid()
+    )
+    RETURNING id
+)
+INSERT INTO incidenttags (incidentid, tagid)
+SELECT new_incident.id, contenttag.id
+FROM new_incident, contenttag
+WHERE contenttag.name IN ('Drug Use');
+
+-- Incidents for route 510
+WITH new_incident AS (
+    INSERT INTO incident (stopid, incidenttime, description, createdat, uuid)
+    VALUES (
+        2986,
+        '2026-03-17 18:15:00',
+        'I was groped by another passenger',
+        NOW(),
+        gen_random_uuid()
+    )
+    RETURNING id
+)
+INSERT INTO incidenttags (incidentid, tagid)
+SELECT new_incident.id, contenttag.id
+FROM new_incident, contenttag
+WHERE contenttag.name IN ('Sexual Assault', 'Harassment');
+
+WITH new_incident AS (
+    INSERT INTO incident (stopid, incidenttime, description, createdat, uuid)
+    VALUES (
+        2345,
+        '2026-03-2 16:30:00',
+        'School kids started fighting before one got on the next bus',
+        NOW(),
+        gen_random_uuid()
+    )
+    RETURNING id
+)
+INSERT INTO incidenttags (incidentid, tagid)
+SELECT new_incident.id, contenttag.id
+FROM new_incident, contenttag
+WHERE contenttag.name IN ('Fighting');
+
+WITH new_incident AS (
+    INSERT INTO incident (stopid, incidenttime, description, createdat, uuid)
+    VALUES (
+        431,
+        '2026-02-6 14:10:00',
+        'Late back to work cause someone was stabbed',
+        NOW(),
+        gen_random_uuid()
+    )
+    RETURNING id
+)
+INSERT INTO incidenttags (incidentid, tagid)
+SELECT new_incident.id, contenttag.id
+FROM new_incident, contenttag
+WHERE contenttag.name IN ('Stabbing', 'Disorderly Conduct')
+
+-- Incidents for route 515 
+
+WITH new_incident AS (
+    INSERT INTO incident (stopid, incidenttime, description, createdat, uuid)
+    VALUES (
+        620,
+        '2026-02-18 17:10:00',
+        'Disturbed dude was talking to himself in the back of the bus',
+        NOW(),
+        gen_random_uuid()
+    )
+    RETURNING id
+)
+INSERT INTO incidenttags (incidentid, tagid)
+SELECT new_incident.id, contenttag.id
+FROM new_incident, contenttag
+WHERE contenttag.name IN ('Disorderly Conduct', 'Drug Use');
+
+WITH new_incident AS (
+    INSERT INTO incident (stopid, incidenttime, description, createdat, uuid)
+    VALUES (
+        2035,
+        '2026-02-4 8:30:00',
+        'My purse was stolen',
+        NOW(),
+        gen_random_uuid()
+    )
+    RETURNING id
+)
+INSERT INTO incidenttags (incidentid, tagid)
+SELECT new_incident.id, contenttag.id
+FROM new_incident, contenttag
+WHERE contenttag.name IN ('Robbery');
+
+WITH new_incident AS (
+    INSERT INTO incident (stopid, incidenttime, description, createdat, uuid)
+    VALUES (
+        940,
+        '2026-1-17 6:00:00',
+        'Vulgar language written on sidewalk',
+        NOW(),
+        gen_random_uuid()
+    )
+    RETURNING id
+)
+INSERT INTO incidenttags (incidentid, tagid)
+SELECT new_incident.id, contenttag.id
+FROM new_incident, contenttag
+WHERE contenttag.name IN ('Vandalism');
+
+
