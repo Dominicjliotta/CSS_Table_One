@@ -3,7 +3,6 @@ package com.tableone.ptsss.server;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /*--------------------------------------------------------------------*/
 /* ServerApiGetIncidentsByStop                                        */
@@ -32,8 +31,7 @@ public class ServerApiGetIncidentsByStop extends ServerApi<String> {
 
         this.locationName = (String)args[0];
     }
-
-    @SuppressWarnings("unchecked")
+    
 	@Override
     protected String completeRequest() throws Exception {
 
@@ -48,12 +46,13 @@ public class ServerApiGetIncidentsByStop extends ServerApi<String> {
         StringBuilder out = new StringBuilder();
         out.append("Incidents at stop: " + this.locationName + ":");
         out.append("\n================================");
-        
-        //used to store data for all incidents
-      	HashMap<String, Object[]> incidentMap = new HashMap<>();
 
       	//iterate through the list of incidents
         boolean isEmpty = true;
+        //keep track of the current incident as we iterate,
+        //since each incident may have multiple rows containing incident tags
+        String prevUUID = null;
+        Incident incident = null;
         while (rs.next()) {
         	
             isEmpty = false;
@@ -65,39 +64,61 @@ public class ServerApiGetIncidentsByStop extends ServerApi<String> {
             String stop = rs.getString("locationName");
             String uuid = rs.getString("uuid");
 
-            //create an entry for this incident if it has not already been created
-			if (!incidentMap.containsKey(uuid)) {
-				incidentMap.put(uuid, new Object[] {time, stop, description, new ArrayList<String>()});
-			}
-			
-			//add this tag to a list of tags for this incident
-			((ArrayList<String>)(incidentMap.get(uuid)[3])).add(tag);
+            //if this is the first row, or this is a new incident
+            if (prevUUID == null || !(prevUUID.equals(uuid))) {
+            	//append the previous incident to the output if it exists
+            	if (incident != null) out.append("\n").append(incident);
+            	//replace the old incident with a new incident with the new row data
+            	incident = new Incident(time, description, stop);
+            }
+            
+            //add the current tag to the incident
+            incident.tags.add(tag);
             
         }
         
-        //iterate through each incident
-  		for (String uuid : incidentMap.keySet()) {
-  			
-  			Object[] values = incidentMap.get(uuid);
-  			
-  			//get the values for this incident
-  			String time = (String)values[0];
-  			String stop = (String)values[1];
-  			String description = (String)values[2];
-  			ArrayList<String> tags = (ArrayList<String>)values[3];
-  			
-  			//print the values
-  			out.append("\n\nStop: ").append(stop).append(" | Time: ").append(time).append(" | Description: ")
-  			.append(description).append("\nTags:");
-  			
-  			for (String tag : tags) out.append("\n- ").append(tag);
-  			
-  		}
+        //print the last incident if it exists
+        if (incident != null) out.append("\n").append(incident);
 
+      //if the query returned nothing, say "NONE"
         if (isEmpty) out.append("\nNONE");
 
         return out.toString();
         
     }
+	
+	//inner incident class, used in this api for storing incident data
+	private static class Incident {
+		
+		//information needed to print
+		public String time;
+		public String description;
+		public String stop;
+		public ArrayList<String> tags;
+		
+		public Incident(String time, String description, String stop) {
+			this.time = time;
+			this.description = description;
+			this.stop = stop;
+			this.tags = new ArrayList<>();
+		}
+		
+		//build a clean string representation of this object to print
+		@Override
+		public String toString() {
+			
+			StringBuilder s = new StringBuilder();
+			s.append("\nStop: ").append(this.stop);
+			s.append(" | Time: ").append(this.time);
+			s.append(" | Description: ").append(this.description);
+			s.append("\nTags:");
+			
+			for (String tag : this.tags) s.append("\n- ").append(tag);
+			
+			return s.toString();
+			
+		}
+		
+	}
     
 }

@@ -508,7 +508,7 @@ public class ServerDriver {
 	        + "    JOIN IncidentTags ON (IncidentTags.incidentID = Incident.ID)\n"
 	        + "    JOIN ContentTag ON (ContentTag.ID = IncidentTags.tagID)\n"
 	        + "WHERE Stop.locationName ILIKE ?\n"
-	        + "ORDER BY Incident.incidentTime DESC;"
+	        + "ORDER BY Incident.uuid, Incident.incidentTime DESC;"
 	    );
 	
 	    return getIncidentsByStop;
