@@ -87,6 +87,8 @@ public class ClientApiUpdateIncident extends ClientApi {
 			input = scanner.nextLine().trim();
 		}
 		
+		if (tagList.size() == 0) throw new Exception("You must provide at least one tag!");
+		
 		//convert the tag list to a primitive array and save
 		this.tags = tagList.toArray(new String[tagList.size()]);
 		
