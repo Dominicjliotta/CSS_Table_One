@@ -92,7 +92,7 @@ public class ServerApiSubmitIncident extends ServerApi<String> {
 			return uuid;
 		
 		} catch (Exception E) {
-			ServerDriver.commitTX();
+			ServerDriver.rollbackTX();
 			return null;
 		}
 					

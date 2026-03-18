@@ -94,6 +94,12 @@ public class ServerDriver {
 		connection.commit();
 		connection.setAutoCommit(true);
 	}
+	
+	//rollback a transaction
+	public static void rollbackTX() throws Exception {
+		connection.rollback();
+		connection.setAutoCommit(true);
+	}
 
 	//runs all PreparedStatement functions once to initialize them
 	private static void prepareQueries() throws Exception {
