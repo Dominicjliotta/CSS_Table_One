@@ -45,7 +45,7 @@ public class ServerApiGetContentTags extends ServerApi<String> {
 			
 			String tagName = rs.getString("name");
 			String tagSeverity = rs.getString("severity");
-			out.append(tagName + " | Severity = " + tagSeverity);
+			out.append(tagName + " | Severity = " + tagSeverity + "\n");
 			
 		}
 
