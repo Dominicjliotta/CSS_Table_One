@@ -475,22 +475,27 @@ public class ServerDriver {
 	}
 
 	/*
-	 * gets all stops given a route number
+	 * gets all stops and arrival times for a given route number
 	 *
 	 * PARAMS:
 	 * 1 - routeNumber (string)
 	 */
 	public static PreparedStatement query_getRouteStops() throws Exception {
 
-		if (getRouteStops != null) return getRouteStops;
+		if (getRouteStops != null)
+			return getRouteStops;
 
+		// For each stop on the route, return the stop location along with all
+		// scheduled arrival times, grouped by weekday.
 		getRouteStops = connection.prepareStatement(
-			"SELECT locationName\r\n"
-			+ "FROM Route\r\n"
-			+ "	JOIN RouteStops ON (RouteStops.routeNumber = Route.number)\r\n"
-			+ "	JOIN Stop ON (Stop.ID = RouteStops.stopID)\r\n"
-			+ "WHERE Route.number = ?;"
-		);
+				"SELECT Stop.locationName, WeekDay.day, ArrivalTime.time\r\n"
+						+ "FROM Route\r\n"
+						+ "	JOIN RouteStops ON (RouteStops.routeNumber = Route.number)\r\n"
+						+ "	JOIN Stop ON (Stop.ID = RouteStops.stopID)\r\n"
+						+ "	JOIN ArrivalTime ON (ArrivalTime.routeStopID = RouteStops.routeStopID)\r\n"
+						+ "	JOIN WeekDay ON (WeekDay.ID = ArrivalTime.weekDayID)\r\n"
+						+ "WHERE Route.number = ?\r\n"
+						+ "ORDER BY Stop.locationName, WeekDay.day, ArrivalTime.time;");
 
 		return getRouteStops;
 

@@ -30,45 +30,33 @@ public class ServerApiGetRouteStops extends ServerApi<String> {
         ResultSet Rnumber = ps.executeQuery();
         if (!Rnumber.next()) throw new Exception("Invalid Route Number!");
 
-        // Fetch route info
-        PreparedStatement info = ServerDriver.query_getRouteInfo();
-        info.setString(1, this.routeNumber);
-        ResultSet rs = info.executeQuery();
-
         StringBuilder out = new StringBuilder();
-        out.append("Information on route: " + this.routeNumber.toUpperCase() + ":");
+        out.append("Stops for route " + this.routeNumber.toUpperCase() + ":");
 
-        if (!rs.next()) {
+        // Fetch all stops and arrival times for this route
+        PreparedStatement stops = ServerDriver.query_getRouteStops();
+        stops.setString(1, this.routeNumber);
+        ResultSet stopsRs = stops.executeQuery();
+
+        boolean hasRows = false;
+        String lastLocation = null;
+        while (stopsRs.next()) {
+            hasRows = true;
+            String location = stopsRs.getString("locationName");
+            String day = stopsRs.getString("day");
+            String time = stopsRs.getString("time");
+
+            // Print the stop header once, then list all day/time pairs under it
+            if (lastLocation == null || !lastLocation.equals(location)) {
+                out.append("\n- " + location);
+                lastLocation = location;
+            }
+
+            out.append("\n    " + day + " @ " + time);
+        }
+
+        if (!hasRows) {
             out.append("\nNONE");
-        } else {
-            out.append("\nRoute Number: " + this.routeNumber.toUpperCase());
-
-            // Safety score
-            PreparedStatement score = ServerDriver.query_getSemiYearlyScore();
-            score.setString(1, this.routeNumber);
-            ResultSet scoreRs = score.executeQuery();
-
-            if (scoreRs.next()) {
-                double doubleScore = scoreRs.getDouble("score");
-                out.append("\nSafety Score (Last 6 months): " + doubleScore);
-            } else {
-                out.append("\nSafety Score: N/A");
-            }
-
-            // Fetch all stops for this route
-            PreparedStatement stops = ServerDriver.query_getRouteStops();
-            stops.setString(1, this.routeNumber);
-            ResultSet stopsRs = stops.executeQuery();
-
-            out.append("\nStops:");
-            boolean hasStops = false;
-            while (stopsRs.next()) {
-                hasStops = true;
-                out.append("\n  - " + stopsRs.getString("locationName"));
-            }
-            if (!hasStops) {
-                out.append("\n  NONE");
-            }
         }
 
         return out.toString();
