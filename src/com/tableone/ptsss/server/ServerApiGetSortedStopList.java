@@ -4,6 +4,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Time;
 
+/*--------------------------------------------------------------------------*/
+/* ServerApiGetSortedStopList                                               */
+/* Author: Kareem                                                           */
+/*                                                                          */
+/* getSortedStopList(destination, weekDay)                                  */
+/* Returns a list of bus stop times (Showing route number, arrival time,    */
+/* and semi-yearly score for route) for a given destination on a given day  */
+/* of the week. The list is sorted by time of arrival at the destination.   */
+/*--------------------------------------------------------------------------*/
+
 public class ServerApiGetSortedStopList extends ServerApi<String> {
 
 	private String destination;
@@ -27,7 +37,6 @@ public class ServerApiGetSortedStopList extends ServerApi<String> {
 			throw new Exception("ServerApiGetSortedStopList received invalid type for weekDay");
 		}
 		
-		//cast and store the arguments into variables
 		this.destination = (String)args[0];
 		this.weekDay = (String)args[1];
 		
@@ -39,13 +48,12 @@ public class ServerApiGetSortedStopList extends ServerApi<String> {
 		//fetch the query for calculating semi-yearly route scores
 		PreparedStatement scorePs = ServerDriver.query_getSemiYearlyScore();
 		
-		//fetch the query for this api call
+		//fetch the query for this api call and set the parameters
 		PreparedStatement ps = ServerDriver.query_getSortedStopList();
-		//set the parameters
 		ps.setString(1, this.destination);
 		ps.setString(2, this.weekDay);
 		
-		//execute the query and get the results
+		//execute the query
 		ResultSet rs = ps.executeQuery();
 		
 		//build the output string
@@ -53,8 +61,6 @@ public class ServerApiGetSortedStopList extends ServerApi<String> {
 		out.append("List of buses arriving at " + this.destination.toUpperCase() + " on " + this.weekDay.toUpperCase() + ":");
 		
 		boolean isEmpty = true;
-		
-		//iterate through each row of the ResultSet
 		while (rs.next()) {
 			
 			isEmpty = false;
@@ -78,7 +84,6 @@ public class ServerApiGetSortedStopList extends ServerApi<String> {
 		//if the query returned nothing, say "NONE"
 		if (isEmpty) out.append("\nNONE");
 		
-		//return the output string
 		return out.toString();
 		
 	}

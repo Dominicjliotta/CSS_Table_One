@@ -2,6 +2,16 @@ package com.tableone.ptsss.server;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+/*--------------------------------------------------------------------------------*/
+/* ServerApiGetRouteInfo                                                          */
+/* Author: Melissa                                                                */
+/*                                                                                */
+/* getRouteInfo(routeNumber)                                                      */
+/* Returns route information including start and end locations, and current score */
+/* calculated on the last 6 months.                                               */
+/*--------------------------------------------------------------------------------*/
+
 public class ServerApiGetRouteInfo extends ServerApi<String> {
 
     private String routeNumber;
@@ -14,12 +24,11 @@ public class ServerApiGetRouteInfo extends ServerApi<String> {
             throw new Exception("ServerApiGetRouteInfo received " + args.length + " arguments, expected 1");
         }
 
-        //type-check destination
+        //type-check route number
         if (!(args[0] instanceof String)) {
-            throw new Exception("ServerApiGetRouteInfo received invalid type for Route Number");
+            throw new Exception("ServerApiGetRouteInfo received invalid type for route number");
         }
-
-        //cast and store the arguments into variables
+        
         this.routeNumber = (String)args[0];
 
     }
@@ -27,15 +36,15 @@ public class ServerApiGetRouteInfo extends ServerApi<String> {
     @Override
     protected String completeRequest() throws Exception {
 
-        //reject any non-existant route numbers
+    	//reject any non-existent route numbers
         PreparedStatement ps = ServerDriver.query_routeExists();
         ps.setString(1, this.routeNumber);
-        ResultSet Rnumber = ps.executeQuery();
-        if (!Rnumber.next()) throw new Exception("Invalid Route Number!");
+        
+        ResultSet routeExists = ps.executeQuery();
+        if (!routeExists.next()) throw new Exception("Invalid route number!");
 
-        //fetch the query for this api call
+        //fetch the query for this api call and set the parameters
         PreparedStatement info = ServerDriver.query_getRouteInfo();
-        //set the parameters
         info.setString(1, this.routeNumber);
 
         //execute the query and get the results
@@ -44,34 +53,32 @@ public class ServerApiGetRouteInfo extends ServerApi<String> {
         //build the output string
         StringBuilder out = new StringBuilder();
         out.append("Information on route: " + this.routeNumber.toUpperCase() + ":");
-
-        if (!rs.next()) {
-            out.append("\nNONE");
-        } else {
+        
+        if (rs.next()) {
+        	
             out.append("\nStart Location: " + rs.getString("Start Location"));
             out.append("\nEnd Location: " + rs.getString("End Location"));
-
-
+            
             //fetch the query for calculating semi-yearly route scores
-            PreparedStatement score = ServerDriver.query_getSemiYearlyScore();
+            PreparedStatement scoreQuery = ServerDriver.query_getSemiYearlyScore();
+            scoreQuery.setString(1, routeNumber);
+            
             //get the score for the route
-            score.setString(1, routeNumber);
-            ResultSet scoreRs = score.executeQuery();
+            ResultSet scoreRs = scoreQuery.executeQuery();
 
             if (scoreRs.next()) {
-                double doubleScore = scoreRs.getDouble("score");
-                out.append("\nSafety Score (Last 6 months): " + doubleScore);
+                double score = scoreRs.getDouble("score");
+                out.append("\nSafety Score (Last 6 months): " + score);
             } else {
-                out.append("\nSafety Score: N/A");
+                out.append("\nSafety Score (Last 6 months): N/A");
             }
+            
         }
-            //return the output string
-            return out.toString();
+        
+        if (out.length() == 0) out.append("NONE");
+        
+        return out.toString();
 
     }
 
-
 }
-
-
-

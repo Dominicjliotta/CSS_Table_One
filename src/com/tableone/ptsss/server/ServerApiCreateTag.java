@@ -1,34 +1,80 @@
-package com.tableone.ptsss.client;
+package com.tableone.ptsss.server;
 
-import java.util.Scanner;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
-import com.tableone.ptsss.server.ServerApiGetRouteStops;
+/*--------------------------------------------------------------------------------*/
+/* ServerApiCreateTag                                                             */
+/* Author: Melissa                                                                */
+/*                                                                                */
+/* createTag(name, severity)                                                      */
+/* Creates a new incident content tag. Returns true on success, false on failure. */
+/*--------------------------------------------------------------------------------*/
 
-public class ClientApiGetRouteStops extends ClientApi {
+public class ServerApiCreateTag extends ServerApi<Boolean> {
 
-    private String routeNumber;
+    private String name;
+    private int severity;
 
     @Override
-    protected String getName() {
-        return "getRouteStops()";
-    }
+    protected void parseRequest(Object[] args) throws Exception {
 
-    @Override
-    protected void parseRequest(Scanner scanner) throws Exception {
-
-        System.out.print("Route Number: ");
-        this.routeNumber = scanner.nextLine();
-
-        if (this.routeNumber.isEmpty()) {
-            throw new Exception("Route number cannot be empty.");
+        //make sure the server received the correct number of arguments
+        if (args.length != 2) {
+            throw new Exception("ServerApiCreateTag received " + args.length + " arguments, expected 2");
         }
+
+        //type-check tag name
+        if (!(args[0] instanceof String)) {
+            throw new Exception("ServerApiCreateTag received invalid type for tag name");
+        }
+
+        //type-check severity
+        if (!(args[1] instanceof Integer)) {
+            throw new Exception("ServerApiCreateTag received invalid type for severity");
+        }
+        
+        this.name = (String)args[0];
+        this.severity = (int)args[1];
     }
 
     @Override
-    protected void performCall() throws Exception {
+    protected Boolean completeRequest() throws Exception {
 
-        ServerApiGetRouteStops serverApi = new ServerApiGetRouteStops();
-        String output = serverApi.call(this.routeNumber);
-        printOutput(output);
+        //reject any pre-existing content tag
+        PreparedStatement ps = ServerDriver.query_contentTagExists();
+        ps.setString(1, this.name);
+        
+        ResultSet exists = ps.executeQuery();
+        if (exists.next()) throw new Exception("Content Tag already exists!");
+
+        try {
+        	
+            //begin a transaction because this performs CRUD operations
+            ServerDriver.beginTX();
+
+            //fetch the query for this api call and set the parameters
+            PreparedStatement ContentTag = ServerDriver.query_addContentTag();
+            ContentTag.setString(1, this.name);
+            ContentTag.setInt(2, this.severity);
+            
+            //execute the query
+            ContentTag.execute();
+
+            //commit the transaction
+            ServerDriver.commitTX();
+
+            //tag creation succeeded, return true
+            return true;
+
+        } catch  (Exception e) {
+        	//something went wrong! return false
+            return false;
+        }
+        
     }
+
 }
+
+
+
