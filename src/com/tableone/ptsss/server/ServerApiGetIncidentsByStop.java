@@ -70,6 +70,8 @@ public class ServerApiGetIncidentsByStop extends ServerApi<String> {
             	if (incident != null) out.append("\n").append(incident);
             	//replace the old incident with a new incident with the new row data
             	incident = new Incident(time, description, stop);
+            	//update prevUUID
+            	prevUUID = uuid;
             }
             
             //add the current tag to the incident
