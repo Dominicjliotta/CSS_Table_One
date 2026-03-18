@@ -65,7 +65,7 @@ public class ServerApiSubmitIncident extends ServerApi<String> {
 
 
 			String UUID = UUID.randomUUID().toString();
-			incidentPs.setString(5, UUID);
+			incidentPs.setString(4, UUID);
 			ResultSet rs = incidentPs.executeQuery();
 
 			// for each tag in tags[], add it 

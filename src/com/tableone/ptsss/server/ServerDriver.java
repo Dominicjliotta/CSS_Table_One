@@ -29,8 +29,7 @@ public class ServerDriver {
 	private static PreparedStatement submitIncident;
 	private static PreparedStatement getIncidents;
 	private static PreparedStatement getContentTags;
-	private static PreparedStatement getRouteStops;
-	private static PreparedStatement getIncidentsByStop;
+
 	// connects to the database, sets up prepared statements, etc.
 	public static boolean setup() {
 
@@ -105,13 +104,7 @@ public class ServerDriver {
 		query_setIncidentDescription();
 		query_getAllArrivals();
 		query_getBuses();
-		query_getRouteStops();
-		query_getIncidentsByStop();
 	}
-
-	/*===================================================*/
-	/* /!\ ALL PREPARED STATEMENTS ARE DEFINED BELOW /!\ */
-	/*===================================================*/
 
 	/*
 	 * query for getting a route's semi-yearly score (past 6 months)
@@ -198,7 +191,7 @@ public class ServerDriver {
 
 	/*
 	 * deletes all tags for an incident
-	 *
+	 * 
 	 * PARAMS:
 	 * 1 - incidentUUID (string)
 	 */
@@ -217,7 +210,7 @@ public class ServerDriver {
 
 	/*
 	 * adds a tag to an incident
-	 *
+	 * 
 	 * PARAMS:
 	 * 1 - incidentUUID (string)
 	 * 2 - tag (string)
@@ -237,7 +230,7 @@ public class ServerDriver {
 
 	/*
 	 * change the description of an incident
-	 *
+	 * 
 	 * PARAMS:
 	 * 1 - description (string)
 	 * 2 - incidentUUID (string)
@@ -257,7 +250,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * gets all arrivals at all stops, sorted by route number, day, and time
+	 * Gets all arrivals at all stops, sorted by route number, day, and time
 	 *
 	 * PARAMS: none
 	 */
@@ -281,7 +274,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * gets all buses for a specific route number
+	 * Gets all buses for a specific route number
 	 *
 	 * PARAMS:
 	 * 1 - routeNumber (string)
@@ -299,8 +292,8 @@ public class ServerDriver {
 	}
 
 	/*
-	 * lists all tags from incidents from the last 6 month
-	 *
+	 * Lists all tags from incedents from the last 6 month
+	 * 
 	 * PARAMS:
 	 * 1 - routeNumber (string)
 	 */
@@ -315,7 +308,7 @@ public class ServerDriver {
 						+ "\tJOIN IncidentTags ON (contentTag.id = IncidentTags.tagID)\r\n"
 						+ "\tJOIN Incident ON (IncidentTags.incidentID = Incident.ID)\r\n"
 						+ "\tJOIN Stop ON (Incident.stopID = Stop.ID)\r\n"
-						+ "\tJOIN RouteStops ON (Stop.ID = RouteStops.StopId)\r\n"
+						+ "\tJOIN RouteStops ON (Stop.ID = RouteStops.RouteStopId)\r\n"
 						+ "WHERE RouteStops.routeNumber ILIKE ? "
 						+ "AND Incident.incidentTime >= CURRENT_DATE - INTERVAL '6 months';");
 
@@ -324,7 +317,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * add new incident content tag
+	 * Add new incident tag
 	 *
 	 * PARAMS:
 	 * 1 - name (string)
@@ -344,7 +337,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * get route info
+	 * Get Route info
 	 *
 	 * PARAMS:
 	 * 1 - routeNumber (string)
@@ -366,7 +359,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * does route number exist
+	 * Does route number exist
 	 *
 	 * PARAMS:
 	 * 1 - routeNumber (string)
@@ -382,7 +375,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * does content tag exist
+	 * Does Content Tag exist
 	 *
 	 * PARAMS:
 	 * 1 - name (string)
@@ -398,7 +391,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * submit incident
+	 * Submit Incident
 	 *
 	 * PARAMS:
 	 * 1 - stopLocation
@@ -415,7 +408,7 @@ public class ServerDriver {
 
 		submitIncident = connection.prepareStatement(
 			"INSERT INTO incident (stopid, incidenttime, description, createdat, uuid) " +
-			"VALUES " +
+			"VALUES " + 
 			"((SELECT id FROM stop WHERE locationname ILIKE ? LIMIT 1), " + // stopid
 			"?, " + // time
 			"?,  " + // description
@@ -429,7 +422,7 @@ public class ServerDriver {
 	}
 
 	/*
-	 * getIncidents
+	 * GetIncidents
 	 *
 	 * PARAMS:
 	 * 1 - routeNumber
@@ -458,11 +451,12 @@ public class ServerDriver {
 	}
 
 	/*
-	 * getContentTags
+	 * GetContentTags
 	 *
 	 * PARAMS:
 	 * none
 	 */
+
 	public static PreparedStatement query_getContentTags() throws Exception {
 		if (getContentTags != null)
 			return getContentTags;
@@ -473,56 +467,5 @@ public class ServerDriver {
 
 		return getContentTags;
 	}
-
-	/*
-	 * gets all stops and arrival times for a given route number
-	 *
-	 * PARAMS:
-	 * 1 - routeNumber (string)
-	 */
-	public static PreparedStatement query_getRouteStops() throws Exception {
-
-		if (getRouteStops != null)
-			return getRouteStops;
-
-		// For each stop on the route, return the stop location along with all
-		// scheduled arrival times, grouped by weekday.
-		getRouteStops = connection.prepareStatement(
-				"SELECT Stop.locationName, WeekDay.day, ArrivalTime.time\r\n"
-						+ "FROM Route\r\n"
-						+ "	JOIN RouteStops ON (RouteStops.routeNumber = Route.number)\r\n"
-						+ "	JOIN Stop ON (Stop.ID = RouteStops.stopID)\r\n"
-						+ "	JOIN ArrivalTime ON (ArrivalTime.routeStopID = RouteStops.routeStopID)\r\n"
-						+ "	JOIN WeekDay ON (WeekDay.ID = ArrivalTime.weekDayID)\r\n"
-						+ "WHERE Route.number = ?\r\n"
-						+ "ORDER BY Stop.locationName, WeekDay.day, ArrivalTime.time;");
-
-		return getRouteStops;
-
-	}
-
-	/*
- * Gets all incidents for a stop location
- *
- * PARAMS:
- * 1 - locationName (string)
- */
-public static PreparedStatement query_getIncidentsByStop() throws Exception {
-
-    if (getIncidentsByStop != null) return getIncidentsByStop;
-
-    getIncidentsByStop = connection.prepareStatement(
-        "SELECT Stop.locationName, Incident.incidentTime, Incident.description, ContentTag.name AS tag\n"
-        + "FROM Stop\n"
-        + "    JOIN Incident ON (Incident.stopID = Stop.ID)\n"
-        + "    JOIN IncidentTags ON (IncidentTags.incidentID = Incident.ID)\n"
-        + "    JOIN ContentTag ON (ContentTag.ID = IncidentTags.tagID)\n"
-        + "WHERE Stop.locationName ILIKE ?\n"
-        + "ORDER BY Incident.incidentTime DESC;"
-    );
-
-    return getIncidentsByStop;
-
-}
 
 }
