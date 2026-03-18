@@ -315,7 +315,7 @@ public class ServerDriver {
 						+ "\tJOIN IncidentTags ON (contentTag.id = IncidentTags.tagID)\r\n"
 						+ "\tJOIN Incident ON (IncidentTags.incidentID = Incident.ID)\r\n"
 						+ "\tJOIN Stop ON (Incident.stopID = Stop.ID)\r\n"
-						+ "\tJOIN RouteStops ON (Stop.ID = RouteStops.RouteStopId)\r\n"
+						+ "\tJOIN RouteStops ON (Stop.ID = RouteStops.StopId)\r\n"
 						+ "WHERE RouteStops.routeNumber ILIKE ? "
 						+ "AND Incident.incidentTime >= CURRENT_DATE - INTERVAL '6 months';");
 
