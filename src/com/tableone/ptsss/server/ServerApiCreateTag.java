@@ -1,73 +1,34 @@
-package com.tableone.ptsss.server;
+package com.tableone.ptsss.client;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.util.Scanner;
 
-public class ServerApiCreateTag extends ServerApi<Boolean> {
+import com.tableone.ptsss.server.ServerApiGetRouteStops;
 
-    private String name;
-    private int severity;
+public class ClientApiGetRouteStops extends ClientApi {
 
+    private String routeNumber;
 
     @Override
-    protected void parseRequest(Object[] args) throws Exception {
-
-        //make sure the server received the correct number of arguments
-        if (args.length != 2) {
-            throw new Exception("ServerApiCreateTag received " + args.length + " arguments, expected 2");
-        }
-
-        //type-check tag name
-        if (!(args[0] instanceof String)) {
-            throw new Exception("ServerApiCreateTag received invalid type for tag name");
-        }
-
-        //type-check severity
-        if (!(args[1] instanceof Integer)) {
-            throw new Exception("ServerApiCreateTag received invalid type for severity");
-        }
-
-        //cast and store the arguments into variables
-        this.name = (String) args[0];
-        this.severity = (int) args[1];
+    protected String getName() {
+        return "getRouteStops()";
     }
 
     @Override
-    protected Boolean completeRequest() throws Exception {
+    protected void parseRequest(Scanner scanner) throws Exception {
 
+        System.out.print("Route Number: ");
+        this.routeNumber = scanner.nextLine();
 
-        //reject any pre-existing content tag  
-        PreparedStatement ps = ServerDriver.query_contentTagExists();
-        ps.setString(1, this.name);
-        ResultSet exists = ps.executeQuery();
-        if (exists.next()) throw new Exception("Content Tag already exists!");
-
-        try {
-            //begin a transaction because this performs CRUD operations
-            ServerDriver.beginTX();
-
-            //fetch the query for this api call
-            PreparedStatement ContentTag = ServerDriver.query_addContentTag();
-            //set the parameters
-            ContentTag.setString(1, this.name);
-            ContentTag.setInt(2, this.severity);
-
-
-            //execute the query
-            ContentTag.executeQuery();
-
-            //commit the transaction
-            ServerDriver.commitTX();
-
-            return true;
-
-        } catch  (Exception e) {
-            return false;
+        if (this.routeNumber.isEmpty()) {
+            throw new Exception("Route number cannot be empty.");
         }
     }
 
+    @Override
+    protected void performCall() throws Exception {
 
+        ServerApiGetRouteStops serverApi = new ServerApiGetRouteStops();
+        String output = serverApi.call(this.routeNumber);
+        printOutput(output);
+    }
 }
-
-
-
