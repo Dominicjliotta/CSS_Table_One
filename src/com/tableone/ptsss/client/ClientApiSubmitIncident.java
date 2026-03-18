@@ -59,6 +59,8 @@ public class ClientApiSubmitIncident extends ClientApi {
         //convert comma-separated tags into array
         this.tags = tagsInput.split(",");
 
+        if (this.tags.length == 0) throw new Exception("At least one tag must be provided!");
+        
         //trim whitespace from tags
         for (int i = 0; i < this.tags.length; i++) {
         	
@@ -78,9 +80,12 @@ public class ClientApiSubmitIncident extends ClientApi {
         ServerApiSubmitIncident serverApi = new ServerApiSubmitIncident();
         //the server returns a uuid that must be given to the user
         String uuid = serverApi.call(this.stopLocation, this.time, this.description, this.tags);
-
-        //print the returned uuid
-        printOutput("Incident submitted successfully!\nUUID: " + uuid);
+        
+        //this api returns null on failure
+        //print an error message if uuid is null
+        //otherwise, print a success message with the uuid
+        if (uuid == null) printOutput("Could not submit incident.");
+        else printOutput("Incident submitted successfully!\nUUID: " + uuid);
         
     }
 

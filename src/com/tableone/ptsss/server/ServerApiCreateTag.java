@@ -68,6 +68,7 @@ public class ServerApiCreateTag extends ServerApi<Boolean> {
             return true;
 
         } catch  (Exception e) {
+        	ServerDriver.commitTX();
         	//something went wrong! return false
             return false;
         }

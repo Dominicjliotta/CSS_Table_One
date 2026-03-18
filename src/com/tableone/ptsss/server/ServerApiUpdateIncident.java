@@ -92,6 +92,7 @@ public class ServerApiUpdateIncident extends ServerApi<Boolean> {
 			return true;
 		
 		} catch (Exception e) {
+			ServerDriver.commitTX();
 			//something didnt work! return false
 			return false;
 		}

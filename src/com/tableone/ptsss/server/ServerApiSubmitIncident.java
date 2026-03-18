@@ -58,36 +58,43 @@ public class ServerApiSubmitIncident extends ServerApi<String> {
 	@Override
 	protected String completeRequest() throws Exception {
 		
-		//use transaction as this does CRUD operations
-		ServerDriver.beginTX();
+		try {
 		
-		//create the uuid for this incident
-		String uuid = UUID.randomUUID().toString();
-
-		//fetch the query for this api call and set the parameters
-		PreparedStatement incidentPs = ServerDriver.query_submitIncident();
-		incidentPs.setString(1, this.stopLocation);
-		incidentPs.setTimestamp(2, this.time);
-		incidentPs.setString(3, this.description);
-		incidentPs.setString(4, uuid);
-		
-		//execute the query
-		incidentPs.execute();
-		
-		//fetch the query for adding tags to the incident
-		PreparedStatement addIncidentTag = ServerDriver.query_addIncidentTag();
-		addIncidentTag.setString(1, uuid);
-
-		//for each tag in tags[], add it
-		for (String tag : this.tags) {
+			//use transaction as this does CRUD operations
+			ServerDriver.beginTX();
+			
+			//create the uuid for this incident
+			String uuid = UUID.randomUUID().toString();
+	
+			//fetch the query for this api call and set the parameters
+			PreparedStatement incidentPs = ServerDriver.query_submitIncident();
+			incidentPs.setString(1, this.stopLocation);
+			incidentPs.setTimestamp(2, this.time);
+			incidentPs.setString(3, this.description);
+			incidentPs.setString(4, uuid);
+			
+			//execute the query
+			incidentPs.execute();
+			
+			//fetch the query for adding tags to the incident
+			PreparedStatement addIncidentTag = ServerDriver.query_addIncidentTag();
 			addIncidentTag.setString(1, uuid);
-			addIncidentTag.setString(2, tag);
-			addIncidentTag.execute();
-		}
+	
+			//for each tag in tags[], add it
+			for (String tag : this.tags) {
+				addIncidentTag.setString(1, uuid);
+				addIncidentTag.setString(2, tag);
+				addIncidentTag.execute();
+			}
+			
+			ServerDriver.commitTX();
+	
+			return uuid;
 		
-		ServerDriver.commitTX();
-
-		return uuid;
+		} catch (Exception E) {
+			ServerDriver.commitTX();
+			return null;
+		}
 					
 	}
 	
