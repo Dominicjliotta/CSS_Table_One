@@ -429,7 +429,7 @@ WITH new_incident AS (
 INSERT INTO incidenttags (incidentid, tagid)
 SELECT new_incident.id, contenttag.id
 FROM new_incident, contenttag
-WHERE contenttag.name IN ('Stabbing', 'Disorderly Conduct')
+WHERE contenttag.name IN ('Stabbing', 'Disorderly Conduct');
 
 -- Incidents for route 515 
 
