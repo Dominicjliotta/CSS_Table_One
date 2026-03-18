@@ -3,6 +3,15 @@ package com.tableone.ptsss.server;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/*----------------------------------------------------------*/
+/* ServerApiGetRecentTags                                   */
+/* Author: Melissa                                          */
+/*                                                          */
+/* getRecentTags(routeNumber)                               */
+/* Returns a list of  tags from  incidents across all stops */
+/* along a route from the last 6 months.                    */
+/*----------------------------------------------------------*/
+
 public class ServerApiGetRecentTags extends ServerApi<String> {
 
     private String routeNumber;
@@ -15,12 +24,11 @@ public class ServerApiGetRecentTags extends ServerApi<String> {
             throw new Exception("ServerApiGetRecentTags received " + args.length + " arguments, expected 1");
         }
 
-        //type-check destination
+        //type-check route number
         if (!(args[0] instanceof String)) {
-            throw new Exception("ServerApiGetRecentTags received invalid type for Route Number");
+            throw new Exception("ServerApiGetRecentTags received invalid type for route number");
         }
-
-        //cast and store the arguments into variables
+        
         this.routeNumber = (String)args[0];
 
     }
@@ -28,18 +36,18 @@ public class ServerApiGetRecentTags extends ServerApi<String> {
     @Override
     protected String completeRequest() throws Exception {
 
-        //reject any non-existant route numbers
+    	//reject any non-existent route numbers
         PreparedStatement ps = ServerDriver.query_routeExists();
         ps.setString(1, this.routeNumber);
-        ResultSet Rnumber = ps.executeQuery();
-        if (!Rnumber.next()) throw new Exception("Invalid Route Number!");
+        
+        ResultSet routeExists = ps.executeQuery();
+        if (!routeExists.next()) throw new Exception("Invalid route number!");
 
-        //fetch the query for this api call
+        //fetch the query for this api call and set the parameters
         PreparedStatement tagPs = ServerDriver.query_getRecentTags();
-        //set the parameters
         tagPs.setString(1, this.routeNumber);
 
-        //execute the query and get the results
+        //execute the query
         ResultSet rs = tagPs.executeQuery();
 
         //build the output string
@@ -47,27 +55,21 @@ public class ServerApiGetRecentTags extends ServerApi<String> {
         out.append("List of recent tags on route " + this.routeNumber.toUpperCase() + ":");
 
         boolean isEmpty = true;
-
-        //iterate through each row of the ResultSet
         while (rs.next()) {
+        	
             isEmpty = false;
-
-            //get each tag from query
+            
             String contentName = rs.getString("name");
             String contentSeverity = rs.getString("severity");
             out.append("\nContent Tag: " + contentName + " (" + contentSeverity + ")");
+            
         }
 
         //if the query returned nothing, say "NONE"
         if (isEmpty) out.append("\nNONE");
-
-        //return the output string
+        
         return out.toString();
 
     }
 
-
 }
-
-
-

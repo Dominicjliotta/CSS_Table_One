@@ -66,7 +66,7 @@ public class ClientDriver {
 		System.out.println("4 - getBuses(routeNumber)");
 		System.out.println("5 - getRouteInfo(routeNumber)");
 		System.out.println("6 - createTag(name, severity)");
-		System.out.println("7 - getRecentTags(routeNumber");
+		System.out.println("7 - getRecentTags(routeNumber)");
 		System.out.println("8 - submitIncident(stopLocation, time, description, tags[])");
 		System.out.println("9 - getIncidents(routeNumber)");
 		System.out.println("10 - getContentTags()");
